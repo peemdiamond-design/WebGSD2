@@ -431,6 +431,34 @@
             showMessage('Authentication Required', 'ระบบฐานข้อมูลสงวนไว้สำหรับเจ้าหน้าที่ GSD2 กรุณายืนยันตัวตนผ่าน Token', 'warning');
         });
 
+<!-- ======================= 
+         Firebase Configuration
+    ======================== -->
+    <script type="module">
+        // Import the functions you need from the SDKs via CDN
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics.js";
+        
+        // หากในอนาคตต้องการเก็บข้อมูลฟอร์มลงฐานข้อมูล ให้ปลดคอมเมนต์บรรทัดล่างนี้
+        // import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDLF2VnClpWVRHn7a_p2WxxnQ999e0K7YY",
+            authDomain: "webgsd2.firebaseapp.com",
+            projectId: "webgsd2",
+            storageBucket: "webgsd2.firebasestorage.app",
+            messagingSenderId: "976550762283",
+            appId: "1:976550762283:web:dc966df09ff4a43ca8d76e",
+            measurementId: "G-71TKG5CW6T"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        
+        // const db = getFirestore(app); // สำหรับใช้งานฐานข้อมูล
+        
+        console.log("🔥 Firebase Initialized Successfully");
     </script>
 </body>
 </html>
