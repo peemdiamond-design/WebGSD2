@@ -72,9 +72,12 @@
                 </div>
 
                 <!-- Auth / Login Button -->
-                <div>
-                    <button onclick="openLoginModal()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-1.5 rounded text-xs font-mono border border-slate-600 transition shadow flex items-center">
+                <div id="auth-buttons">
+                    <button id="btn-open-login" onclick="openLoginModal()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-1.5 rounded text-xs font-mono border border-slate-600 transition shadow flex items-center">
                         <i class="fa-solid fa-fingerprint mr-2 text-bpp-accent"></i> STAFF LOGIN
+                    </button>
+                    <button id="btn-logout" class="bg-red-900 hover:bg-red-800 text-white px-4 py-1.5 rounded text-xs font-mono border border-red-700 transition shadow hidden items-center">
+                        <i class="fa-solid fa-power-off mr-2"></i> LOGOUT
                     </button>
                 </div>
             </div>
@@ -302,7 +305,6 @@
                 </div>
             </div>
 
-            <!-- กล่องกราฟจำลอง -->
             <div class="mt-8 bg-slate-800 border border-slate-700 rounded-lg h-64 flex items-center justify-center intel-border">
                 <div class="text-center text-gray-500">
                     <i class="fa-solid fa-chart-column text-4xl mb-3"></i>
@@ -325,21 +327,18 @@
                     <div class="h-px bg-red-900/50 flex-grow ml-6"></div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                    <!-- Mugshot 1 -->
                     <div class="bg-slate-900 border border-red-800 p-3 rounded text-center relative shadow-lg">
                         <div class="absolute top-0 left-0 w-full bg-red-900 text-white text-[10px] font-mono py-1 rounded-t">WANTED / RED NOTICE</div>
                         <img src="https://placehold.co/200x250/1e293b/475569?text=NO+IMAGE" class="w-full h-40 object-cover mt-6 border border-slate-700 mb-3 grayscale">
                         <h4 class="text-white text-sm font-bold">นายสมชาย (นามสมมติ)</h4>
                         <p class="text-xs text-red-400 font-mono mt-1">เครือข่ายยาเสพติด</p>
                     </div>
-                    <!-- Mugshot 2 -->
                     <div class="bg-slate-900 border border-yellow-700 p-3 rounded text-center relative shadow-lg">
                         <div class="absolute top-0 left-0 w-full bg-yellow-700 text-white text-[10px] font-mono py-1 rounded-t">WATCHLIST / YELLOW</div>
                         <img src="https://placehold.co/200x250/1e293b/475569?text=NO+IMAGE" class="w-full h-40 object-cover mt-6 border border-slate-700 mb-3 grayscale">
                         <h4 class="text-white text-sm font-bold">พาหนะต้องสงสัย</h4>
                         <p class="text-xs text-yellow-500 font-mono mt-1">กระบะ 4 ประตู สีดำ</p>
                     </div>
-                    <!-- Mugshot 3 -->
                     <div class="bg-slate-900 border border-red-800 p-3 rounded text-center relative shadow-lg">
                         <div class="absolute top-0 left-0 w-full bg-red-900 text-white text-[10px] font-mono py-1 rounded-t">WANTED / RED NOTICE</div>
                         <img src="https://placehold.co/200x250/1e293b/475569?text=NO+IMAGE" class="w-full h-40 object-cover mt-6 border border-slate-700 mb-3 grayscale">
@@ -349,7 +348,7 @@
                 </div>
             </div>
 
-            <!-- News Section (ของเดิม) -->
+            <!-- News Section -->
             <div class="flex items-center mb-8">
                 <i class="fa-solid fa-newspaper text-bpp-gray text-2xl mr-3"></i>
                 <h2 class="text-2xl font-bold text-gray-100">รายงานข่าวกรองล่าสุด</h2>
@@ -357,7 +356,6 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- News Card 1 -->
                 <article class="bg-bpp-navyLight rounded-lg intel-border overflow-hidden hover:border-bpp-gray transition group">
                     <div class="relative">
                         <img src="https://placehold.co/600x300/0f172a/64748b?text=Intel+Report" class="w-full h-40 object-cover opacity-80 transition grayscale group-hover:grayscale-0">
@@ -369,7 +367,6 @@
                         <button class="btn-read-more text-bpp-accent text-sm hover:text-white transition font-mono mt-3">[ อ่านรายละเอียด ]</button>
                     </div>
                 </article>
-                <!-- News Card 2 -->
                 <article class="bg-bpp-navyLight rounded-lg intel-border overflow-hidden hover:border-bpp-gray transition group">
                     <div class="relative">
                         <img src="https://placehold.co/600x300/0f172a/64748b?text=Surveillance" class="w-full h-40 object-cover opacity-80 transition grayscale group-hover:grayscale-0">
@@ -502,20 +499,22 @@
          Modals (หน้าต่างป็อปอัพ)
     ======================== -->
 
-    <!-- Login Modal -->
+    <!-- Login Modal (อัปเดตช่องให้ตรงกับ Firebase) -->
     <div id="login-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="bg-bpp-navyLight border border-bpp-accent w-full max-w-sm rounded-lg shadow-2xl overflow-hidden p-8 text-center">
             <i class="fa-solid fa-user-shield text-5xl text-bpp-accent mb-4"></i>
             <h3 class="text-white text-xl font-bold mb-1">STAFF AUTHENTICATION</h3>
             <p class="text-xs text-gray-500 font-mono mb-6">RESTRICTED AREA</p>
             
-            <input type="text" placeholder="รหัสเจ้าหน้าที่ (ID)" class="w-full bg-slate-900 border border-slate-600 rounded px-4 py-3 text-sm text-white mb-3 text-center font-mono focus:border-bpp-accent outline-none">
-            <input type="password" placeholder="รหัสผ่าน (PASSWORD)" class="w-full bg-slate-900 border border-slate-600 rounded px-4 py-3 text-sm text-white mb-6 text-center font-mono focus:border-bpp-accent outline-none">
-            
-            <div class="flex space-x-3">
-                <button onclick="closeLoginModal()" class="flex-1 py-3 text-sm text-gray-400 hover:text-white transition font-mono border border-slate-600 rounded">CANCEL</button>
-                <button onclick="closeLoginModal(); showMessage('ACCESS DENIED', 'ระบบจำลองการล็อกอิน: ไม่พบข้อมูลในฐานข้อมูล', 'error')" class="flex-1 bg-bpp-accent text-black font-bold py-3 text-sm rounded transition font-mono">LOGIN</button>
-            </div>
+            <form id="login-form">
+                <input type="email" id="login-email" required placeholder="อีเมลเจ้าหน้าที่ (EMAIL)" class="w-full bg-slate-900 border border-slate-600 rounded px-4 py-3 text-sm text-white mb-3 text-center font-mono focus:border-bpp-accent outline-none">
+                <input type="password" id="login-password" required placeholder="รหัสผ่าน (PASSWORD)" class="w-full bg-slate-900 border border-slate-600 rounded px-4 py-3 text-sm text-white mb-6 text-center font-mono focus:border-bpp-accent outline-none">
+                
+                <div class="flex space-x-3">
+                    <button type="button" onclick="closeLoginModal()" class="flex-1 py-3 text-sm text-gray-400 hover:text-white transition font-mono border border-slate-600 rounded">CANCEL</button>
+                    <button type="submit" id="btn-login-submit" class="flex-1 bg-bpp-accent hover:bg-blue-400 text-black font-bold py-3 text-sm rounded transition font-mono">LOGIN</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -651,7 +650,10 @@
             document.getElementById('report-form').reset();
         }
         function openLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); }
-        function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
+        function closeLoginModal() { 
+            document.getElementById('login-modal').classList.add('hidden'); 
+            document.getElementById('login-form').reset();
+        }
 
         // --- Dummy functions ---
         window.simulateCall = function(dest) { showMessage('Establishing Connection', `กำลังติดต่อไปที่: ${dest}...`, 'info'); };
@@ -661,13 +663,15 @@
     </script>
 
     <!-- ======================= 
-         Firebase Configuration & Database Logic
+         Firebase Configuration, Auth & Database
     ======================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        // นำเข้าโมดูล Authentication เพิ่มเติม
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-        // Config ที่คุณให้มา
+        // Config 
         const firebaseConfig = {
             apiKey: "AIzaSyDLF2VnClpWVRHn7a_p2WxxnQ999e0K7YY",
             authDomain: "webgsd2.firebaseapp.com",
@@ -681,31 +685,101 @@
         // เริ่มต้น Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app); // เริ่มต้นระบบ Auth
         
-        console.log("🔥 Firebase Firestore Connected");
+        console.log("🔥 Firebase Firestore & Auth Connected");
 
-        // จัดการเมื่อกดปุ่ม "บันทึกข้อมูล" ในฟอร์มแจ้งเบาะแส
-        const btnSubmit = document.getElementById('btn-submit-report');
-        btnSubmit.addEventListener('click', async (e) => {
+        // ======================= 
+        // ส่วนการล็อกอิน (Login System)
+        // =======================
+        const loginForm = document.getElementById('login-form');
+        const btnLoginSubmit = document.getElementById('btn-login-submit');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // ป้องกันการรีเฟรชหน้า
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            btnLoginSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            btnLoginSubmit.disabled = true;
+
+            try {
+                // พยายามล็อกอินกับ Firebase
+                await signInWithEmailAndPassword(auth, email, password);
+                closeLoginModal();
+                showMessage('ACCESS GRANTED', 'ยืนยันตัวตนสำเร็จ เข้าสู่ระบบเจ้าหน้าที่แล้ว', 'success');
+            } catch (error) {
+                console.error("Login Error: ", error);
+                // ตรวจสอบชนิดของ Error
+                let errorMessage = "เกิดข้อผิดพลาดในการเข้าระบบ";
+                if (error.code === 'auth/invalid-credential') errorMessage = "อีเมลหรือรหัสผ่านไม่ถูกต้อง";
+                else if (error.code === 'auth/too-many-requests') errorMessage = "คุณพยายามล็อกอินผิดพลาดหลายครั้งเกินไป โปรดรอสักครู่";
+                
+                showMessage('ACCESS DENIED', errorMessage, 'error');
+            } finally {
+                btnLoginSubmit.innerHTML = 'LOGIN';
+                btnLoginSubmit.disabled = false;
+            }
+        });
+
+        // ======================= 
+        // การเช็กสถานะว่าล็อกอินอยู่ไหม (Auth Observer)
+        // =======================
+        const btnOpenLogin = document.getElementById('btn-open-login');
+        const btnLogout = document.getElementById('btn-logout');
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // ผู้ใช้ล็อกอินอยู่: ซ่อนปุ่ม Login, แสดงปุ่ม Logout
+                btnOpenLogin.classList.add('hidden');
+                btnOpenLogin.classList.remove('flex');
+                
+                btnLogout.classList.remove('hidden');
+                btnLogout.classList.add('flex');
+            } else {
+                // ไม่มีผู้ใช้ล็อกอิน: ซ่อนปุ่ม Logout, แสดงปุ่ม Login
+                btnOpenLogin.classList.remove('hidden');
+                btnOpenLogin.classList.add('flex');
+                
+                btnLogout.classList.add('hidden');
+                btnLogout.classList.remove('flex');
+            }
+        });
+
+        // ======================= 
+        // ระบบออกจากระบบ (Logout)
+        // =======================
+        btnLogout.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                showMessage('SYSTEM STATUS', 'ออกจากระบบอย่างปลอดภัย (Secure Logout Completed)', 'info');
+            } catch (error) {
+                showMessage('ERROR', 'ไม่สามารถออกจากระบบได้', 'error');
+            }
+        });
+
+        // ======================= 
+        // ส่วนการส่งฟอร์มแจ้งเบาะแส
+        // =======================
+        const btnSubmitReport = document.getElementById('btn-submit-report');
+        btnSubmitReport.addEventListener('click', async (e) => {
             e.preventDefault();
             
             const typeInput = document.getElementById('report-type').value;
             const detailsInput = document.getElementById('report-details').value;
             const contactInput = document.getElementById('report-contact').value;
             
-            // ตรวจสอบว่ากรอกข้อมูลครบไหม
             if (!typeInput || !detailsInput.trim()) {
                 showMessage('ข้อมูลไม่ครบถ้วน', 'กรุณาระบุหัวข้อและรายละเอียดของเบาะแสให้ครบถ้วน', 'warning');
                 return;
             }
 
-            // เปลี่ยนปุ่มเป็นกำลังโหลด
-            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> กำลังบันทึก...';
-            btnSubmit.disabled = true;
+            btnSubmitReport.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> กำลังบันทึก...';
+            btnSubmitReport.disabled = true;
 
             try {
-                // คำสั่งส่งข้อมูลเข้า Database
-                const docRef = await addDoc(collection(db, "clue_reports"), {
+                await addDoc(collection(db, "clue_reports"), {
                     type: typeInput,
                     details: detailsInput,
                     contact: contactInput,
@@ -719,9 +793,8 @@
                 console.error("Error adding document: ", error);
                 showMessage('เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้: ' + error.message, 'error');
             } finally {
-                // คืนสภาพปุ่มเดิม
-                btnSubmit.innerHTML = '<i class="fa-solid fa-database mr-2 text-xs"></i> บันทึกข้อมูล';
-                btnSubmit.disabled = false;
+                btnSubmitReport.innerHTML = '<i class="fa-solid fa-database mr-2 text-xs"></i> บันทึกข้อมูล';
+                btnSubmitReport.disabled = false;
             }
         });
     </script>
