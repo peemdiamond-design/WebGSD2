@@ -667,7 +667,7 @@
                 const idToken = await user.getIdToken(true);
                 
                 // 2. ชี้เป้าไปที่ Ubuntu API ของคุณ (ใช้พอร์ต 1009 ที่เราเพิ่งแก้ไป)
-                const apiServerUrl = "http://100.92.143.123:1009"; 
+                const apiServerUrl = "http://localhost:1009"; 
                 
                 // 3. ยิงคำขอไปหา Ubuntu พร้อมแนบบัตรผ่าน (Token)
                 const response = await fetch(`${apiServerUrl}/api/download/${documentId}`, {
