@@ -13,15 +13,16 @@
                 extend: {
                     fontFamily: {
                         sans: ['Sarabun', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'], // For intelligence/tech feel
+                        mono: ['JetBrains Mono', 'monospace'],
                     },
                     colors: {
                         bpp: {
-                            navy: '#0f172a',    // Dark slate 900
-                            navyLight: '#1e293b', // Slate 800
-                            gray: '#64748b',    // Slate 500
-                            grayLight: '#94a3b8', // Slate 400
-                            accent: '#38bdf8',  // Light blue for tech accents
+                            navy: '#0f172a',    
+                            navyLight: '#1e293b', 
+                            gray: '#64748b',    
+                            grayLight: '#94a3b8', 
+                            accent: '#38bdf8',  
+                            danger: '#ef4444',
                         }
                     }
                 }
@@ -40,8 +41,7 @@
             border: 1px solid rgba(100, 116, 139, 0.3);
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
         }
-        /* Custom scrollbar for tech feel */
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #64748b; }
@@ -49,11 +49,20 @@
 </head>
 <body class="text-gray-300 antialiased selection:bg-bpp-accent selection:text-bpp-navy">
 
+    <!-- Top Status Bar -->
+    <div class="bg-black border-b border-slate-800 text-xs font-mono py-1 px-4 flex justify-between items-center z-50 relative text-gray-500">
+        <div class="flex items-center space-x-4">
+            <span class="text-green-500"><i class="fa-solid fa-lock text-[10px] mr-1"></i> [SECURE: 256-BIT ENCRYPTED]</span>
+            <span class="hidden md:inline">NODE: TH-BKK-01</span>
+        </div>
+        <div id="live-clock" class="text-bpp-accent tracking-widest">00:00:00</div>
+    </div>
+
     <!-- Header / Navigation -->
     <header class="bg-bpp-navy/95 backdrop-blur-sm border-b border-bpp-gray/30 sticky top-0 z-40 shadow-xl">
         <div class="container mx-auto px-4">
             <div class="flex flex-wrap justify-between items-center py-3 gap-4">
-                <!-- Logo area -->
+                <!-- Logo -->
                 <div class="flex items-center space-x-3">
                     <i class="fa-solid fa-radar text-bpp-accent text-3xl animate-pulse"></i>
                     <div>
@@ -62,62 +71,115 @@
                     </div>
                 </div>
 
-                <!-- Navigation -->
-                <nav class="hidden lg:flex space-x-6 text-sm font-medium">
-                    <a href="#hero" class="text-bpp-accent border-b-2 border-bpp-accent pb-1 transition">หน้าหลัก</a>
-                    <!-- เพิ่มเมนูโครงสร้างตรงนี้ -->
-                    <a href="#command" class="hover:text-bpp-accent transition pb-1">โครงสร้าง</a> 
-                    <a href="#news" class="hover:text-bpp-accent transition pb-1">ข่าวกรอง (Intelligence)</a>
-                    <a href="#contact" class="hover:text-bpp-accent transition pb-1">ติดต่อศูนย์ข่าว</a>
-                </nav>
-
-                <!-- Search Bar -->
-                <div class="flex w-full lg:w-auto mt-2 lg:mt-0">
-                    <div class="relative w-full lg:w-64">
-                        <input type="text" id="search-input" placeholder="ค้นหารหัสเอกสาร / ข้อมูล..." 
-                            class="w-full bg-bpp-navyLight border border-bpp-gray/50 text-gray-200 text-sm rounded-l-md px-3 py-2 focus:outline-none focus:border-bpp-accent font-mono placeholder-gray-500 transition">
-                    </div>
-                    <button id="btn-search" class="bg-bpp-gray hover:bg-gray-500 text-white px-4 py-2 rounded-r-md transition border border-bpp-gray/50 border-l-0">
-                        <i class="fa-solid fa-magnifying-glass"></i>
+                <!-- Auth / Login Button -->
+                <div>
+                    <button onclick="openLoginModal()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-1.5 rounded text-xs font-mono border border-slate-600 transition shadow flex items-center">
+                        <i class="fa-solid fa-fingerprint mr-2 text-bpp-accent"></i> STAFF LOGIN
                     </button>
                 </div>
+            </div>
+
+            <!-- SPA Navigation Menu -->
+            <div class="overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0">
+                <nav class="flex space-x-1 min-w-max pb-1" id="main-nav">
+                    <button onclick="switchPage('page-home', this)" class="nav-btn px-3 py-2 text-sm text-bpp-accent border-b-2 border-bpp-accent transition whitespace-nowrap"><i class="fa-solid fa-house mr-1"></i> หน้าหลัก</button>
+                    <button onclick="switchPage('page-command', this)" class="nav-btn px-3 py-2 text-sm text-gray-400 hover:text-bpp-accent transition whitespace-nowrap"><i class="fa-solid fa-sitemap mr-1"></i> โครงสร้าง</button>
+                    <button onclick="switchPage('page-dashboard', this)" class="nav-btn px-3 py-2 text-sm text-gray-400 hover:text-bpp-accent transition whitespace-nowrap"><i class="fa-solid fa-chart-line mr-1"></i> กระดานสถิติ</button>
+                    <button onclick="switchPage('page-intel', this)" class="nav-btn px-3 py-2 text-sm text-gray-400 hover:text-bpp-accent transition whitespace-nowrap"><i class="fa-solid fa-file-shield mr-1"></i> แฟ้มข่าวกรอง</button>
+                    <button onclick="switchPage('page-docs', this)" class="nav-btn px-3 py-2 text-sm text-gray-400 hover:text-bpp-accent transition whitespace-nowrap"><i class="fa-solid fa-folder-open mr-1"></i> คลังเอกสาร</button>
+                    <button onclick="switchPage('page-contact', this)" class="nav-btn px-3 py-2 text-sm text-gray-400 hover:text-bpp-accent transition whitespace-nowrap"><i class="fa-solid fa-phone mr-1"></i> ติดต่อ</button>
+                </nav>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section id="hero" class="hero-bg min-h-[500px] flex items-center relative overflow-hidden">
-        <!-- Tech grid overlay -->
-        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')]"></div>
-        
-        <div class="container mx-auto px-4 relative z-10">
-            <div class="max-w-2xl border-l-4 border-bpp-accent pl-6 py-2">
-                <div class="inline-block px-3 py-1 bg-bpp-navyLight border border-bpp-gray/40 text-bpp-accent font-mono text-xs mb-4 rounded shadow-sm">
-                    <i class="fa-solid fa-circle text-[8px] animate-pulse mr-2"></i> SYSTEM ACTIVE: SECURE CONNECTION
-                </div>
-                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight drop-shadow-lg">
-                    ศูนย์ปฏิบัติการข่าวกรอง <br>
-                    <span class="text-bpp-grayLight text-3xl md:text-4xl">Border Security & Intelligence</span>
-                </h2>
-                <p class="text-gray-400 text-lg mb-8 font-light max-w-xl">
-                    รวบรวม วิเคราะห์ และปฏิบัติการด้านการข่าว เพื่อรักษาความมั่นคงตามแนวชายแดนและป้องกันภัยคุกคามข้ามชาติ
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <button id="btn-open-report" class="bg-slate-700 hover:bg-slate-600 text-white font-medium py-3 px-6 rounded shadow-lg transition border border-slate-500 flex items-center justify-center group">
-                        <i class="fa-solid fa-user-secret mr-2 group-hover:text-bpp-accent transition"></i> แจ้งเบาะแส (Report Clues)
-                    </button>
-                    <button id="btn-intel-database" class="bg-bpp-navyLight hover:bg-bpp-gray/30 text-gray-300 font-mono text-sm py-3 px-6 rounded shadow-lg transition border border-bpp-gray/30 flex items-center justify-center">
-                        <i class="fa-solid fa-database mr-2"></i> เข้าสู่ฐานข้อมูล
-                    </button>
+    <!-- ======================= 
+         หน้าหลัก (Home Page) 
+    ======================== -->
+    <div id="page-home" class="page-section block">
+        <!-- Hero Section -->
+        <section id="hero" class="hero-bg min-h-[450px] flex items-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')]"></div>
+            <div class="container mx-auto px-4 relative z-10">
+                <div class="max-w-2xl border-l-4 border-bpp-accent pl-6 py-2">
+                    <div class="inline-block px-3 py-1 bg-bpp-navyLight border border-bpp-gray/40 text-bpp-accent font-mono text-xs mb-4 rounded shadow-sm">
+                        <i class="fa-solid fa-circle text-[8px] animate-pulse mr-2"></i> INTELLIGENCE OPERATIONS CENTER
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight drop-shadow-lg">
+                        ศูนย์ปฏิบัติการข่าวกรอง <br>
+                        <span class="text-bpp-grayLight text-3xl md:text-4xl">Border Security & Intelligence</span>
+                    </h2>
+                    <p class="text-gray-400 text-lg mb-8 font-light max-w-xl">
+                        รวบรวม วิเคราะห์ และปฏิบัติการด้านการข่าว เพื่อรักษาความมั่นคงตามแนวชายแดนและป้องกันภัยคุกคามข้ามชาติ
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="openReportModal()" class="bg-slate-700 hover:bg-slate-600 text-white font-medium py-3 px-6 rounded shadow-lg transition border border-slate-500 flex items-center justify-center group">
+                            <i class="fa-solid fa-user-secret mr-2 group-hover:text-bpp-accent transition"></i> แจ้งเบาะแส (Report Clues)
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- Vision & Map Section -->
+        <section class="py-16 bg-[#020617] border-y border-bpp-gray/20">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <!-- Vision & Mission -->
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-6 border-b border-bpp-gray/30 pb-3">
+                            <i class="fa-solid fa-bullseye text-bpp-accent mr-2"></i> วิสัยทัศน์ และ พันธกิจ
+                        </h2>
+                        <div class="space-y-6">
+                            <div class="bg-bpp-navyLight p-6 rounded-lg intel-border">
+                                <h3 class="text-bpp-accent font-bold mb-2">วิสัยทัศน์ (Vision)</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed">
+                                    เป็นศูนย์กลางข่าวกรองชั้นเลิศด้านความมั่นคงแนวชายแดน บูรณาการเทคโนโลยีและเครือข่ายเพื่อพิทักษ์เอกราชและผลประโยชน์ของชาติอย่างยั่งยืน
+                                </p>
+                            </div>
+                            <div class="bg-bpp-navyLight p-6 rounded-lg intel-border">
+                                <h3 class="text-bpp-accent font-bold mb-2">พันธกิจ (Mission)</h3>
+                                <ul class="text-gray-400 text-sm leading-relaxed list-disc list-inside space-y-2">
+                                    <li>รวบรวม พิสูจน์ทราบ และวิเคราะห์ข่าวกรองเชิงลึก</li>
+                                    <li>เฝ้าระวังภัยคุกคามข้ามชาติและอาชญากรรมชายแดน</li>
+                                    <li>สนับสนุนข้อมูลยุทธศาสตร์แก่หน่วยปฏิบัติการ</li>
+                                    <li>พัฒนาระบบเทคโนโลยีสารสนเทศด้านการข่าว</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Operations Map -->
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-6 border-b border-bpp-gray/30 pb-3">
+                            <i class="fa-solid fa-map-location-dot text-bpp-accent mr-2"></i> พื้นที่ปฏิบัติการ (Operations Map)
+                        </h2>
+                        <div class="bg-slate-800 p-2 rounded-lg intel-border relative h-[300px] flex items-center justify-center overflow-hidden">
+                            <div class="absolute inset-0 opacity-30 bg-[url('https://placehold.co/800x600/1e293b/334155?text=Topographic+Map')] bg-cover bg-center"></div>
+                            
+                            <!-- Radar effect -->
+                            <div class="absolute w-48 h-48 border border-bpp-accent/30 rounded-full flex items-center justify-center">
+                                <div class="w-32 h-32 border border-bpp-accent/50 rounded-full flex items-center justify-center">
+                                    <div class="w-16 h-16 bg-bpp-accent/20 rounded-full animate-ping"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="relative z-10 text-center">
+                                <i class="fa-solid fa-location-crosshairs text-4xl text-bpp-accent mb-2"></i>
+                                <p class="font-mono text-white bg-black/50 px-3 py-1 rounded text-sm">GSD2 RADAR ONLINE</p>
+                                <p class="text-xs text-gray-400 mt-2">กำลังเฝ้าระวัง 12 จุดผ่านแดนถาวร และ 34 จุดผ่อนปรน</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 
     <!-- ======================= 
-         Command Structure Section (เพิ่มใหม่)
+         โครงสร้างผู้บังคับบัญชา (Command Page) 
     ======================== -->
-    <section id="command" class="py-16 bg-bpp-navy">
+    <div id="page-command" class="page-section hidden py-16 bg-[#020617] min-h-screen">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-center mb-12">
                 <i class="fa-solid fa-sitemap text-bpp-accent text-3xl mr-4"></i>
@@ -125,7 +187,7 @@
             </div>
             
             <div class="flex flex-col items-center">
-                <!-- ระดับ 1: ผู้กำกับการ -->
+                <!-- ระดับ 1 -->
                 <div class="bg-bpp-navyLight border border-bpp-accent p-6 rounded-lg intel-border text-center w-64 md:w-72 relative z-10 shadow-lg">
                     <div class="w-14 h-14 bg-slate-800 rounded-full mx-auto mb-3 flex items-center justify-center border border-bpp-gray">
                         <i class="fa-solid fa-star text-xl text-yellow-500"></i>
@@ -135,16 +197,12 @@
                     <p class="text-bpp-grayLight text-xs font-mono mt-2">SUPERINTENDENT</p>
                 </div>
                 
-                <!-- เส้นเชื่อมลงมา ระดับ 2 -->
                 <div class="w-px h-8 md:h-10 bg-bpp-gray/50 hidden md:block"></div>
                 <div class="w-px h-4 bg-bpp-gray/50 md:hidden"></div>
 
-                <!-- ระดับ 2: รองผู้กำกับการ -->
+                <!-- ระดับ 2 -->
                 <div class="flex flex-col md:flex-row gap-4 md:gap-24 w-full justify-center relative">
-                    <!-- เส้นแนวนอนสำหรับ Desktop -->
                     <div class="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-[calc(100%-18rem)] max-w-md h-px bg-bpp-gray/50"></div>
-                    
-                    <!-- รอง 1 -->
                     <div class="flex flex-col items-center relative">
                         <div class="hidden md:block w-px h-6 bg-bpp-gray/50"></div>
                         <div class="bg-slate-800 border border-bpp-gray/50 p-4 rounded-lg text-center w-64 shadow-md hover:border-bpp-accent transition z-10">
@@ -153,8 +211,6 @@
                             <p class="text-gray-500 text-xs mt-1 font-mono">DEPUTY SUPERINTENDENT</p>
                         </div>
                     </div>
-                    
-                    <!-- รอง 2 -->
                     <div class="flex flex-col items-center relative">
                         <div class="hidden md:block w-px h-6 bg-bpp-gray/50"></div>
                         <div class="bg-slate-800 border border-bpp-gray/50 p-4 rounded-lg text-center w-64 shadow-md hover:border-bpp-accent transition z-10">
@@ -165,203 +221,312 @@
                     </div>
                 </div>
 
-                <!-- เส้นเชื่อมลงมา ระดับ 3 -->
                 <div class="hidden md:block w-px h-10 bg-bpp-gray/50"></div>
                 <div class="w-px h-4 bg-bpp-gray/50 md:hidden"></div>
 
-                <!-- ระดับ 3: สารวัตร -->
+                <!-- ระดับ 3 -->
                 <div class="flex flex-col md:flex-row gap-4 w-full justify-center relative">
-                    <!-- เส้นแนวนอนสำหรับ Desktop -->
                     <div class="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-[calc(100%-15rem)] max-w-4xl h-px bg-bpp-gray/50"></div>
                     
-                    <!-- สว 1 -->
                     <div class="flex flex-col items-center">
                         <div class="hidden md:block w-px h-6 bg-bpp-gray/50"></div>
                         <div class="bg-slate-900 border-t-2 border-bpp-accent p-4 rounded text-center shadow hover:bg-slate-700 transition w-56 z-10">
                             <i class="fa-solid fa-id-badge text-bpp-gray mb-2"></i>
                             <h4 class="text-gray-200 text-sm font-medium">สารวัตร (งานข่าวกรอง)</h4>
-                            <p class="text-xs text-gray-500 font-mono mt-1">INSPECTOR (INTEL)</p>
                         </div>
                     </div>
-                    
-                    <!-- สว 2 -->
                     <div class="flex flex-col items-center">
                         <div class="hidden md:block w-px h-6 bg-bpp-gray/50"></div>
                         <div class="bg-slate-900 border-t-2 border-bpp-accent p-4 rounded text-center shadow hover:bg-slate-700 transition w-56 z-10">
                             <i class="fa-solid fa-id-badge text-bpp-gray mb-2"></i>
                             <h4 class="text-gray-200 text-sm font-medium">สารวัตร (งานยุทธศาสตร์)</h4>
-                            <p class="text-xs text-gray-500 font-mono mt-1">INSPECTOR (STRATEGY)</p>
                         </div>
                     </div>
-
-                    <!-- สว 3 -->
                     <div class="flex flex-col items-center">
                         <div class="hidden md:block w-px h-6 bg-bpp-gray/50"></div>
                         <div class="bg-slate-900 border-t-2 border-bpp-accent p-4 rounded text-center shadow hover:bg-slate-700 transition w-56 z-10">
                             <i class="fa-solid fa-id-badge text-bpp-gray mb-2"></i>
                             <h4 class="text-gray-200 text-sm font-medium">สารวัตร (งานยุทธการ)</h4>
-                            <p class="text-xs text-gray-500 font-mono mt-1">INSPECTOR (OPS)</p>
                         </div>
                     </div>
-                    
-                    <!-- สว 4 -->
                     <div class="flex flex-col items-center">
                         <div class="hidden md:block w-px h-6 bg-bpp-gray/50"></div>
                         <div class="bg-slate-900 border-t-2 border-bpp-accent p-4 rounded text-center shadow hover:bg-slate-700 transition w-56 z-10">
                             <i class="fa-solid fa-id-badge text-bpp-gray mb-2"></i>
                             <h4 class="text-gray-200 text-sm font-medium">สารวัตร (งานเทคโนโลยี)</h4>
-                            <p class="text-xs text-gray-500 font-mono mt-1">INSPECTOR (TECH)</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Intelligence News Section -->
-    <section id="news" class="py-16 bg-[#020617] border-y border-bpp-gray/20">
+    <!-- ======================= 
+         กระดานสถิติ (Dashboard Page) 
+    ======================== -->
+    <div id="page-dashboard" class="page-section hidden py-16 bg-bpp-navy min-h-screen">
         <div class="container mx-auto px-4">
-            <div class="flex items-center mb-10">
-                <i class="fa-solid fa-file-shield text-bpp-gray text-2xl mr-3"></i>
-                <h2 class="text-2xl font-bold text-gray-100">รายงานข่าวกรอง (Intelligence News)</h2>
-                <div class="h-px bg-bpp-gray/30 flex-grow ml-6"></div>
+            <div class="flex items-center mb-8">
+                <i class="fa-solid fa-chart-pie text-bpp-accent text-2xl mr-3"></i>
+                <h2 class="text-2xl font-bold text-white">แดชบอร์ดผลการปฏิบัติงาน (รายเดือน)</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Stat 1 -->
+                <div class="bg-bpp-navyLight border border-bpp-gray/30 p-6 rounded-lg intel-border relative overflow-hidden">
+                    <i class="fa-solid fa-pills text-6xl text-slate-700 absolute -bottom-2 -right-2 opacity-50"></i>
+                    <h3 class="text-gray-400 text-sm font-medium mb-1">สถิติการยึดยาเสพติด (ครั้ง)</h3>
+                    <div class="text-4xl font-mono font-bold text-white mb-2">1,402</div>
+                    <div class="text-xs text-green-500 font-mono"><i class="fa-solid fa-arrow-trend-up"></i> +12% จากเดือนที่แล้ว</div>
+                </div>
+                <!-- Stat 2 -->
+                <div class="bg-bpp-navyLight border border-bpp-gray/30 p-6 rounded-lg intel-border relative overflow-hidden">
+                    <i class="fa-solid fa-person-walking-dashed-line-arrow-right text-6xl text-slate-700 absolute -bottom-2 -right-2 opacity-50"></i>
+                    <h3 class="text-gray-400 text-sm font-medium mb-1">ลักลอบเข้าเมือง (ราย)</h3>
+                    <div class="text-4xl font-mono font-bold text-white mb-2">854</div>
+                    <div class="text-xs text-red-500 font-mono"><i class="fa-solid fa-arrow-trend-down"></i> -5% จากเดือนที่แล้ว</div>
+                </div>
+                <!-- Stat 3 -->
+                <div class="bg-bpp-navyLight border border-bpp-gray/30 p-6 rounded-lg intel-border relative overflow-hidden">
+                    <i class="fa-solid fa-file-shield text-6xl text-slate-700 absolute -bottom-2 -right-2 opacity-50"></i>
+                    <h3 class="text-gray-400 text-sm font-medium mb-1">รายงานข่าวกรองที่ผลิต (ฉบับ)</h3>
+                    <div class="text-4xl font-mono font-bold text-white mb-2">320</div>
+                    <div class="text-xs text-bpp-accent font-mono"><i class="fa-solid fa-check"></i> บรรลุเป้าหมาย 100%</div>
+                </div>
+                <!-- Stat 4 -->
+                <div class="bg-bpp-navyLight border border-bpp-gray/30 p-6 rounded-lg intel-border relative overflow-hidden">
+                    <i class="fa-solid fa-helicopter text-6xl text-slate-700 absolute -bottom-2 -right-2 opacity-50"></i>
+                    <h3 class="text-gray-400 text-sm font-medium mb-1">รอบการลาดตระเวน (ครั้ง)</h3>
+                    <div class="text-4xl font-mono font-bold text-white mb-2">128</div>
+                    <div class="text-xs text-green-500 font-mono">พื้นที่เสี่ยง 45 จุด</div>
+                </div>
             </div>
 
+            <!-- กล่องกราฟจำลอง -->
+            <div class="mt-8 bg-slate-800 border border-slate-700 rounded-lg h-64 flex items-center justify-center intel-border">
+                <div class="text-center text-gray-500">
+                    <i class="fa-solid fa-chart-column text-4xl mb-3"></i>
+                    <p class="font-mono text-sm">GRAPHIC VISUALIZATION MODULE OFFLINE</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================= 
+         แฟ้มข่าวกรอง (Intel & Watchlist Page) 
+    ======================== -->
+    <div id="page-intel" class="page-section hidden py-16 bg-[#020617] min-h-screen">
+        <div class="container mx-auto px-4">
+            <!-- Watchlist Section -->
+            <div class="mb-16">
+                <div class="flex items-center mb-8">
+                    <i class="fa-solid fa-triangle-exclamation text-red-500 text-2xl mr-3"></i>
+                    <h2 class="text-2xl font-bold text-white">บัญชีเฝ้าระวัง (Watchlist / Wanted)</h2>
+                    <div class="h-px bg-red-900/50 flex-grow ml-6"></div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- Mugshot 1 -->
+                    <div class="bg-slate-900 border border-red-800 p-3 rounded text-center relative shadow-lg">
+                        <div class="absolute top-0 left-0 w-full bg-red-900 text-white text-[10px] font-mono py-1 rounded-t">WANTED / RED NOTICE</div>
+                        <img src="https://placehold.co/200x250/1e293b/475569?text=NO+IMAGE" class="w-full h-40 object-cover mt-6 border border-slate-700 mb-3 grayscale">
+                        <h4 class="text-white text-sm font-bold">นายสมชาย (นามสมมติ)</h4>
+                        <p class="text-xs text-red-400 font-mono mt-1">เครือข่ายยาเสพติด</p>
+                    </div>
+                    <!-- Mugshot 2 -->
+                    <div class="bg-slate-900 border border-yellow-700 p-3 rounded text-center relative shadow-lg">
+                        <div class="absolute top-0 left-0 w-full bg-yellow-700 text-white text-[10px] font-mono py-1 rounded-t">WATCHLIST / YELLOW</div>
+                        <img src="https://placehold.co/200x250/1e293b/475569?text=NO+IMAGE" class="w-full h-40 object-cover mt-6 border border-slate-700 mb-3 grayscale">
+                        <h4 class="text-white text-sm font-bold">พาหนะต้องสงสัย</h4>
+                        <p class="text-xs text-yellow-500 font-mono mt-1">กระบะ 4 ประตู สีดำ</p>
+                    </div>
+                    <!-- Mugshot 3 -->
+                    <div class="bg-slate-900 border border-red-800 p-3 rounded text-center relative shadow-lg">
+                        <div class="absolute top-0 left-0 w-full bg-red-900 text-white text-[10px] font-mono py-1 rounded-t">WANTED / RED NOTICE</div>
+                        <img src="https://placehold.co/200x250/1e293b/475569?text=NO+IMAGE" class="w-full h-40 object-cover mt-6 border border-slate-700 mb-3 grayscale">
+                        <h4 class="text-white text-sm font-bold">ไม่ทราบชื่อ (ชาย)</h4>
+                        <p class="text-xs text-red-400 font-mono mt-1">ผู้จัดหาแรงงานเถื่อน</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- News Section (ของเดิม) -->
+            <div class="flex items-center mb-8">
+                <i class="fa-solid fa-newspaper text-bpp-gray text-2xl mr-3"></i>
+                <h2 class="text-2xl font-bold text-gray-100">รายงานข่าวกรองล่าสุด</h2>
+                <div class="h-px bg-bpp-gray/30 flex-grow ml-6"></div>
+            </div>
+            
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- News Card 1 -->
                 <article class="bg-bpp-navyLight rounded-lg intel-border overflow-hidden hover:border-bpp-gray transition group">
                     <div class="relative">
-                        <img src="https://placehold.co/600x300/0f172a/64748b?text=Intel+Report+Alpha" alt="ข่าว 1" class="w-full h-40 object-cover opacity-80 group-hover:opacity-100 transition grayscale group-hover:grayscale-0">
+                        <img src="https://placehold.co/600x300/0f172a/64748b?text=Intel+Report" class="w-full h-40 object-cover opacity-80 transition grayscale group-hover:grayscale-0">
                         <div class="absolute top-2 right-2 bg-red-900/80 text-red-200 text-xs px-2 py-1 rounded font-mono border border-red-700">CLASSIFIED</div>
                     </div>
                     <div class="p-5">
-                        <div class="text-xs text-bpp-grayLight font-mono mb-2 flex justify-between">
-                            <span>DOC-2026-A01</span>
-                            <span>05 OCT 2026</span>
-                        </div>
-                        <h3 class="text-lg font-medium text-white mb-2 leading-snug">เฝ้าระวังการลักลอบขนส่งสินค้าผิดกฎหมายแนวชายแดนตะวันตก</h3>
-                        <p class="text-sm text-gray-400 line-clamp-3 mb-4">
-                            พบความเคลื่อนไหวของกลุ่มผู้มีอิทธิพลในพื้นที่ชายแดนตะวันตก คาดการณ์ว่าจะมีการลักลอบนำเข้าสิ่งของผิดกฎหมายในช่วงสุดสัปดาห์นี้...
-                        </p>
-                        <button class="btn-read-more text-bpp-accent text-sm hover:text-white transition flex items-center font-mono">
-                            [ อ่านรายละเอียด ] <i class="fa-solid fa-terminal ml-2 text-[10px]"></i>
-                        </button>
+                        <div class="text-xs text-bpp-grayLight font-mono mb-2">DOC-2026-A01</div>
+                        <h3 class="text-lg font-medium text-white mb-2">เฝ้าระวังการลักลอบขนส่งสินค้าชายแดนตะวันตก</h3>
+                        <button class="btn-read-more text-bpp-accent text-sm hover:text-white transition font-mono mt-3">[ อ่านรายละเอียด ]</button>
                     </div>
                 </article>
-
                 <!-- News Card 2 -->
                 <article class="bg-bpp-navyLight rounded-lg intel-border overflow-hidden hover:border-bpp-gray transition group">
                     <div class="relative">
-                        <img src="https://placehold.co/600x300/0f172a/64748b?text=Border+Surveillance" alt="ข่าว 2" class="w-full h-40 object-cover opacity-80 group-hover:opacity-100 transition grayscale group-hover:grayscale-0">
+                        <img src="https://placehold.co/600x300/0f172a/64748b?text=Surveillance" class="w-full h-40 object-cover opacity-80 transition grayscale group-hover:grayscale-0">
                         <div class="absolute top-2 right-2 bg-yellow-900/80 text-yellow-200 text-xs px-2 py-1 rounded font-mono border border-yellow-700">RESTRICTED</div>
                     </div>
                     <div class="p-5">
-                        <div class="text-xs text-bpp-grayLight font-mono mb-2 flex justify-between">
-                            <span>SURV-2026-B12</span>
-                            <span>03 OCT 2026</span>
-                        </div>
-                        <h3 class="text-lg font-medium text-white mb-2 leading-snug">สรุปผลการลาดตระเวนทางอากาศ ประจำไตรมาสที่ 3</h3>
-                        <p class="text-sm text-gray-400 line-clamp-3 mb-4">
-                            ภาพถ่ายทางอากาศยืนยันการเปลี่ยนแปลงของภูมิประเทศบริเวณช่องทางธรรมชาติที่อาจใช้เป็นเส้นทางหลบหนีเข้าเมือง...
-                        </p>
-                        <button class="btn-read-more text-bpp-accent text-sm hover:text-white transition flex items-center font-mono">
-                            [ อ่านรายละเอียด ] <i class="fa-solid fa-terminal ml-2 text-[10px]"></i>
-                        </button>
-                    </div>
-                </article>
-
-                <!-- News Card 3 -->
-                <article class="bg-bpp-navyLight rounded-lg intel-border overflow-hidden hover:border-bpp-gray transition group">
-                    <div class="relative">
-                        <img src="https://placehold.co/600x300/0f172a/64748b?text=Cyber+Intel" alt="ข่าว 3" class="w-full h-40 object-cover opacity-80 group-hover:opacity-100 transition grayscale group-hover:grayscale-0">
-                        <div class="absolute top-2 right-2 bg-slate-800 text-gray-300 text-xs px-2 py-1 rounded font-mono border border-gray-600">UNCLASSIFIED</div>
-                    </div>
-                    <div class="p-5">
-                        <div class="text-xs text-bpp-grayLight font-mono mb-2 flex justify-between">
-                            <span>CYB-2026-C05</span>
-                            <span>01 OCT 2026</span>
-                        </div>
-                        <h3 class="text-lg font-medium text-white mb-2 leading-snug">แจ้งเตือนภัยคุกคามทางไซเบอร์ต่อระบบฐานข้อมูลหน่วยงาน</h3>
-                        <p class="text-sm text-gray-400 line-clamp-3 mb-4">
-                            ฝ่ายเทคโนโลยีสารสนเทศ GSD2 ตรวจพบความพยายามในการเจาะระบบจาก IP ต่างประเทศ แนะนำให้เจ้าหน้าที่ทุกนายเปลี่ยนรหัสผ่าน...
-                        </p>
-                        <button class="btn-read-more text-bpp-accent text-sm hover:text-white transition flex items-center font-mono">
-                            [ อ่านรายละเอียด ] <i class="fa-solid fa-terminal ml-2 text-[10px]"></i>
-                        </button>
+                        <div class="text-xs text-bpp-grayLight font-mono mb-2">SURV-2026-B12</div>
+                        <h3 class="text-lg font-medium text-white mb-2">สรุปผลการลาดตระเวนทางอากาศ ประจำไตรมาสที่ 3</h3>
+                        <button class="btn-read-more text-bpp-accent text-sm hover:text-white transition font-mono mt-3">[ อ่านรายละเอียด ]</button>
                     </div>
                 </article>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Contact Section -->
-    <section id="contact" class="py-16 bg-bpp-navy">
+    <!-- ======================= 
+         คลังเอกสาร (Document Vault Page) 
+    ======================== -->
+    <div id="page-docs" class="page-section hidden py-16 bg-bpp-navy min-h-screen">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <div class="flex items-center mb-8 border-b border-bpp-gray/30 pb-4">
+                <i class="fa-solid fa-folder-open text-bpp-accent text-3xl mr-4"></i>
+                <div>
+                    <h2 class="text-2xl font-bold text-white">คลังเอกสารและแบบฟอร์ม (Document Vault)</h2>
+                    <p class="text-gray-400 text-sm">ดาวน์โหลดแบบฟอร์มสำหรับการปฏิบัติงานและระเบียบต่างๆ</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-800 rounded-lg intel-border overflow-hidden">
+                <table class="w-full text-left text-sm text-gray-300">
+                    <thead class="bg-slate-900 text-gray-400 font-mono text-xs uppercase border-b border-slate-700">
+                        <tr>
+                            <th class="px-6 py-4">รหัสเอกสาร</th>
+                            <th class="px-6 py-4">ชื่อเอกสาร / แบบฟอร์ม</th>
+                            <th class="px-6 py-4 text-center">ดาวน์โหลด</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr class="hover:bg-slate-750 transition">
+                            <td class="px-6 py-4 font-mono text-xs text-bpp-accent">FORM-001</td>
+                            <td class="px-6 py-4">แบบฟอร์มรายงานข่าวกรองเบื้องต้น (รข.1)</td>
+                            <td class="px-6 py-4 text-center">
+                                <button class="btn-read-more text-gray-400 hover:text-white"><i class="fa-solid fa-download"></i> PDF</button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-750 transition">
+                            <td class="px-6 py-4 font-mono text-xs text-bpp-accent">FORM-002</td>
+                            <td class="px-6 py-4">แบบคำขออนุมัติเดินทางไปราชการพื้นที่ชายแดน</td>
+                            <td class="px-6 py-4 text-center">
+                                <button class="btn-read-more text-gray-400 hover:text-white"><i class="fa-solid fa-download"></i> PDF</button>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-750 transition">
+                            <td class="px-6 py-4 font-mono text-xs text-bpp-accent">REG-2566</td>
+                            <td class="px-6 py-4">ระเบียบการรักษาความปลอดภัยข้อมูลข่าวสาร พ.ศ. 2566</td>
+                            <td class="px-6 py-4 text-center">
+                                <button class="btn-read-more text-gray-400 hover:text-white"><i class="fa-solid fa-download"></i> PDF</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================= 
+         ติดต่อ (Contact Page) 
+    ======================== -->
+    <div id="page-contact" class="page-section hidden py-16 bg-[#020617] min-h-screen flex items-center">
         <div class="container mx-auto px-4">
             <div class="max-w-4xl mx-auto">
                 <div class="text-center mb-10">
-                    <h2 class="text-2xl font-bold text-white mb-2">ติดต่อศูนย์ปฏิบัติการข่าว (Contact & Emergency)</h2>
-                    <p class="text-gray-400">กองบัญชาการตำรวจตระเวนชายแดน GSD2</p>
+                    <h2 class="text-3xl font-bold text-white mb-2">ติดต่อศูนย์ปฏิบัติการข่าว</h2>
+                    <p class="text-gray-400 font-mono">GSD2 COMMAND CENTER</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Contact Info -->
-                    <div class="bg-bpp-navyLight p-6 rounded-lg intel-border">
-                        <h3 class="text-lg font-medium text-bpp-accent mb-4 border-b border-bpp-gray/30 pb-2"><i class="fa-solid fa-location-dot mr-2"></i> ที่ตั้งหน่วยงาน</h3>
-                        <p class="text-sm text-gray-300 mb-4 leading-relaxed">
-                            กองบัญชาการตำรวจตระเวนชายแดน (ศูนย์ข่าวกรอง GSD2)<br>
+                    <div class="bg-bpp-navyLight p-8 rounded-lg intel-border">
+                        <h3 class="text-xl font-medium text-bpp-accent mb-6 border-b border-bpp-gray/30 pb-3"><i class="fa-solid fa-location-dot mr-2"></i> ที่ตั้งหน่วยงาน</h3>
+                        <p class="text-gray-300 mb-6 leading-relaxed">
+                            ฝ่ายอำนวยการ ๒ กองบัญชาการตำรวจตระเวนชายแดน<br>
                             พหลโยธิน แขวงพญาไท เขตพญาไท<br>
                             กรุงเทพมหานคร 10400
                         </p>
-                        <div class="space-y-3 mt-6">
-                            <div class="flex items-center text-sm">
-                                <i class="fa-solid fa-envelope text-bpp-gray w-6 text-center"></i>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-envelope text-bpp-gray w-8 text-center text-xl"></i>
                                 <span class="text-gray-300 font-mono">intel.gsd2@bpp.go.th</span>
                             </div>
-                            <div class="flex items-center text-sm">
-                                <i class="fa-solid fa-fax text-bpp-gray w-6 text-center"></i>
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-fax text-bpp-gray w-8 text-center text-xl"></i>
                                 <span class="text-gray-300 font-mono">02-XXX-XXXX</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Emergency Action -->
-                    <div class="bg-bpp-navyLight p-6 rounded-lg intel-border flex flex-col justify-center">
-                        <h3 class="text-lg font-medium text-white mb-4 text-center">ช่องทางประสานงานด่วน</h3>
+                    <div class="bg-bpp-navyLight p-8 rounded-lg intel-border flex flex-col justify-center">
+                        <h3 class="text-lg font-medium text-white mb-6 text-center">ช่องทางประสานงานด่วน (24 ชม.)</h3>
                         <div class="space-y-4">
-                            <button onclick="simulateCall('สายด่วนศูนย์ข่าว (1199)')" class="w-full bg-slate-800 hover:bg-slate-700 text-white py-3 px-4 rounded border border-slate-600 transition flex justify-between items-center group">
+                            <button onclick="simulateCall('สายด่วนศูนย์ข่าว (1199)')" class="w-full bg-slate-800 hover:bg-slate-700 text-white py-4 px-6 rounded-lg border border-slate-600 transition flex justify-between items-center group shadow">
                                 <div class="flex items-center">
-                                    <i class="fa-solid fa-phone-volume text-bpp-gray mr-3 group-hover:text-white transition"></i>
-                                    <span>สายด่วนศูนย์ข่าว 24 ชม.</span>
+                                    <i class="fa-solid fa-phone-volume text-bpp-gray mr-4 group-hover:text-white transition text-xl"></i>
+                                    <span class="font-bold">สายด่วนศูนย์ข่าว</span>
                                 </div>
-                                <span class="font-mono font-bold text-bpp-accent">1199</span>
+                                <span class="font-mono text-lg text-bpp-accent">1199</span>
                             </button>
                             
-                            <button onclick="simulateCall('วิทยุสื่อสารความถี่หลัก (CH.1)')" class="w-full bg-slate-800 hover:bg-slate-700 text-white py-3 px-4 rounded border border-slate-600 transition flex justify-between items-center group">
+                            <button onclick="simulateCall('วิทยุสื่อสารความถี่หลัก (CH.1)')" class="w-full bg-slate-800 hover:bg-slate-700 text-white py-4 px-6 rounded-lg border border-slate-600 transition flex justify-between items-center group shadow">
                                 <div class="flex items-center">
-                                    <i class="fa-solid fa-walkie-talkie text-bpp-gray mr-3 group-hover:text-white transition"></i>
-                                    <span>วิทยุสื่อสาร ศปก.</span>
+                                    <i class="fa-solid fa-walkie-talkie text-bpp-gray mr-4 group-hover:text-white transition text-xl"></i>
+                                    <span class="font-bold">วิทยุสื่อสาร ศปก.</span>
                                 </div>
-                                <span class="font-mono text-xs bg-slate-900 px-2 py-1 rounded">CH.1 / 152.XXX MHz</span>
+                                <span class="font-mono text-sm bg-slate-900 px-3 py-1 rounded text-gray-400 border border-slate-700">CH.1</span>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
+    <!-- Footer -->
     <footer class="bg-black py-6 border-t border-bpp-gray/20 text-center text-xs text-gray-500 font-mono">
         <p>&copy; 2026 Border Patrol Police Bureau GSD2. All data transmitted is encrypted and classified.</p>
     </footer>
+
+    <!-- ======================= 
+         Modals (หน้าต่างป็อปอัพ)
+    ======================== -->
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-bpp-navyLight border border-bpp-accent w-full max-w-sm rounded-lg shadow-2xl overflow-hidden p-8 text-center">
+            <i class="fa-solid fa-user-shield text-5xl text-bpp-accent mb-4"></i>
+            <h3 class="text-white text-xl font-bold mb-1">STAFF AUTHENTICATION</h3>
+            <p class="text-xs text-gray-500 font-mono mb-6">RESTRICTED AREA</p>
+            
+            <input type="text" placeholder="รหัสเจ้าหน้าที่ (ID)" class="w-full bg-slate-900 border border-slate-600 rounded px-4 py-3 text-sm text-white mb-3 text-center font-mono focus:border-bpp-accent outline-none">
+            <input type="password" placeholder="รหัสผ่าน (PASSWORD)" class="w-full bg-slate-900 border border-slate-600 rounded px-4 py-3 text-sm text-white mb-6 text-center font-mono focus:border-bpp-accent outline-none">
+            
+            <div class="flex space-x-3">
+                <button onclick="closeLoginModal()" class="flex-1 py-3 text-sm text-gray-400 hover:text-white transition font-mono border border-slate-600 rounded">CANCEL</button>
+                <button onclick="closeLoginModal(); showMessage('ACCESS DENIED', 'ระบบจำลองการล็อกอิน: ไม่พบข้อมูลในฐานข้อมูล', 'error')" class="flex-1 bg-bpp-accent text-black font-bold py-3 text-sm rounded transition font-mono">LOGIN</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Report Clues Modal -->
     <div id="report-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-bpp-navyLight border border-bpp-gray w-full max-w-md rounded-lg shadow-2xl overflow-hidden flex flex-col">
             <div class="bg-slate-800 px-4 py-3 border-b border-slate-700 flex justify-between items-center">
                 <h3 class="text-white font-medium flex items-center">
-                    <i class="fa-solid fa-shield-halved text-bpp-accent mr-2"></i> ฟอร์มแจ้งเบาะแส (Secure Report)
+                    <i class="fa-solid fa-shield-halved text-bpp-accent mr-2"></i> ฟอร์มแจ้งเบาะแส (ส่งเข้า Firebase)
                 </h3>
-                <button id="btn-close-report" class="text-gray-400 hover:text-white transition">
+                <button onclick="closeReportModal()" class="text-gray-400 hover:text-white transition">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
@@ -378,34 +543,30 @@
                             <option value="อื่นๆ">อื่นๆ</option>
                         </select>
                     </div>
-                    
                     <div>
                         <label class="block text-xs text-gray-400 mb-1 font-mono">รายละเอียดข้อมูล *</label>
                         <textarea id="report-details" required rows="4" class="w-full bg-bpp-navy border border-slate-600 rounded px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-bpp-accent placeholder-slate-600" placeholder="ระบุ วัน เวลา สถานที่ และเหตุการณ์..."></textarea>
                     </div>
-
                     <div>
-                        <label class="block text-xs text-gray-400 mb-1 font-mono">ข้อมูลผู้แจ้ง (ไม่บังคับ / ปิดบังตัวตนได้)</label>
+                        <label class="block text-xs text-gray-400 mb-1 font-mono">ข้อมูลผู้แจ้ง (ไม่บังคับ)</label>
                         <input type="text" id="report-contact" class="w-full bg-bpp-navy border border-slate-600 rounded px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-bpp-accent placeholder-slate-600" placeholder="เบอร์โทรศัพท์ หรือนามแฝง">
                     </div>
                 </form>
             </div>
 
             <div class="bg-slate-800 px-4 py-3 border-t border-slate-700 flex justify-end space-x-3">
-                <button id="btn-cancel-report" class="px-4 py-2 text-sm text-gray-300 hover:text-white transition font-mono">ยกเลิก</button>
+                <button onclick="closeReportModal()" class="px-4 py-2 text-sm text-gray-300 hover:text-white transition font-mono">ยกเลิก</button>
                 <button id="btn-submit-report" class="px-4 py-2 bg-bpp-gray hover:bg-slate-500 text-white text-sm rounded transition border border-slate-400 font-mono flex items-center">
-                    <i class="fa-solid fa-lock mr-2 text-xs"></i> ส่งข้อมูล (Submit)
+                    <i class="fa-solid fa-database mr-2 text-xs"></i> บันทึกข้อมูล
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Custom Message Box (Replacement for alert) -->
+    <!-- Custom Message Box -->
     <div id="custom-msg-box" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-bpp-navyLight border border-bpp-accent w-full max-w-sm rounded shadow-2xl p-6 text-center transform scale-95 transition-transform duration-200" id="msg-box-content">
-            <div id="msg-icon" class="text-4xl mb-4 text-bpp-accent">
-                <i class="fa-solid fa-circle-info"></i>
-            </div>
+            <div id="msg-icon" class="text-4xl mb-4 text-bpp-accent"><i class="fa-solid fa-circle-info"></i></div>
             <h3 id="msg-title" class="text-lg font-bold text-white mb-2 font-mono">System Message</h3>
             <p id="msg-text" class="text-gray-300 text-sm mb-6">ข้อความจำลอง</p>
             <button onclick="closeMessageBox()" class="bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded font-mono text-sm border border-slate-500 transition w-full">
@@ -414,42 +575,63 @@
         </div>
     </div>
 
+    <!-- ======================= 
+         Scripts ธรรมดา (UI Logic)
+    ======================== -->
     <script>
-        // --- Modal Elements ---
-        const reportModal = document.getElementById('report-modal');
-        const btnOpenReport = document.getElementById('btn-open-report');
-        const btnCloseReport = document.getElementById('btn-close-report');
-        const btnCancelReport = document.getElementById('btn-cancel-report');
-        const btnSubmitReport = document.getElementById('btn-submit-report');
-        const reportForm = document.getElementById('report-form');
+        // --- Live Clock ---
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('live-clock').innerText = now.toLocaleTimeString('en-US', {hour12: false});
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
 
-        // --- Custom Message Box Elements ---
-        const msgBox = document.getElementById('custom-msg-box');
-        const msgTitle = document.getElementById('msg-title');
-        const msgText = document.getElementById('msg-text');
-        const msgIcon = document.getElementById('msg-icon');
-        const msgBoxContent = document.getElementById('msg-box-content');
+        // --- SPA Navigation Logic ---
+        function switchPage(pageId, btnElement) {
+            document.querySelectorAll('.page-section').forEach(el => {
+                el.classList.remove('block');
+                el.classList.add('hidden');
+            });
+            document.getElementById(pageId).classList.remove('hidden');
+            document.getElementById(pageId).classList.add('block');
+
+            if (btnElement) {
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('text-bpp-accent', 'border-b-2', 'border-bpp-accent');
+                    btn.classList.add('text-gray-400');
+                });
+                btnElement.classList.remove('text-gray-400');
+                btnElement.classList.add('text-bpp-accent', 'border-b-2', 'border-bpp-accent');
+            }
+            window.scrollTo(0, 0);
+        }
 
         // --- Custom Alert Function ---
+        const msgBox = document.getElementById('custom-msg-box');
+        const msgBoxContent = document.getElementById('msg-box-content');
         function showMessage(title, text, type = 'info') {
-            msgTitle.innerText = title;
-            msgText.innerText = text;
+            document.getElementById('msg-title').innerText = title;
+            document.getElementById('msg-text').innerText = text;
+            
+            const icon = document.getElementById('msg-icon');
+            msgBoxContent.className = "bg-bpp-navyLight border w-full max-w-sm rounded shadow-2xl p-6 text-center transform scale-95 transition-transform duration-200";
             
             if (type === 'success') {
-                msgIcon.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
-                msgBoxContent.classList.replace('border-bpp-accent', 'border-green-500');
+                icon.innerHTML = '<i class="fa-solid fa-circle-check text-green-500"></i>';
+                msgBoxContent.classList.add('border-green-500');
             } else if (type === 'warning') {
-                msgIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-yellow-500"></i>';
-                msgBoxContent.classList.replace('border-bpp-accent', 'border-yellow-500');
+                icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-yellow-500"></i>';
+                msgBoxContent.classList.add('border-yellow-500');
+            } else if (type === 'error') {
+                icon.innerHTML = '<i class="fa-solid fa-circle-xmark text-red-500"></i>';
+                msgBoxContent.classList.add('border-red-500');
             } else {
-                msgIcon.innerHTML = '<i class="fa-solid fa-circle-info text-bpp-accent"></i>';
-                // Reset border to default if it was changed
-                msgBoxContent.classList.remove('border-green-500', 'border-yellow-500');
+                icon.innerHTML = '<i class="fa-solid fa-circle-info text-bpp-accent"></i>';
                 msgBoxContent.classList.add('border-bpp-accent');
             }
 
             msgBox.classList.remove('hidden');
-            // Small timeout for animation effect
             setTimeout(() => {
                 msgBoxContent.classList.remove('scale-95');
                 msgBoxContent.classList.add('scale-100');
@@ -459,96 +641,33 @@
         function closeMessageBox() {
             msgBoxContent.classList.remove('scale-100');
             msgBoxContent.classList.add('scale-95');
-            setTimeout(() => {
-                msgBox.classList.add('hidden');
-            }, 150);
+            setTimeout(() => { msgBox.classList.add('hidden'); }, 150);
         }
 
-        // --- Report Modal Logic ---
-        function openReportModal() {
-            reportModal.classList.remove('hidden');
+        // --- Modals Logic ---
+        function openReportModal() { document.getElementById('report-modal').classList.remove('hidden'); }
+        function closeReportModal() { 
+            document.getElementById('report-modal').classList.add('hidden'); 
+            document.getElementById('report-form').reset();
         }
+        function openLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); }
+        function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
 
-        function closeReportModal() {
-            reportModal.classList.add('hidden');
-            reportForm.reset(); // Clear form on close
-        }
-
-        btnOpenReport.addEventListener('click', openReportModal);
-        btnCloseReport.addEventListener('click', closeReportModal);
-        btnCancelReport.addEventListener('click', closeReportModal);
-
-        // Close modal when clicking outside
-        reportModal.addEventListener('click', (e) => {
-            if (e.target === reportModal) closeReportModal();
+        // --- Dummy functions ---
+        window.simulateCall = function(dest) { showMessage('Establishing Connection', `กำลังติดต่อไปที่: ${dest}...`, 'info'); };
+        document.querySelectorAll('.btn-read-more').forEach(btn => {
+            btn.addEventListener('click', () => { showMessage('ACCESS DENIED', 'คุณไม่มีสิทธิ์การเข้าถึงข้อมูลระดับนี้', 'warning'); });
         });
-
-        // Handle Report Submit
-        btnSubmitReport.addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            // Basic validation
-            const type = document.getElementById('report-type').value;
-            const details = document.getElementById('report-details').value;
-            
-            if (!type || !details.trim()) {
-                showMessage('ข้อมูลไม่ครบถ้วน', 'กรุณาระบุหัวข้อและรายละเอียดของเบาะแสให้ครบถ้วน', 'warning');
-                return;
-            }
-
-            // Simulate form submission
-            closeReportModal();
-            showMessage('ส่งข้อมูลสำเร็จ (Encrypted Transfer Complete)', 'ข้อมูลของท่านถูกเข้ารหัสและส่งไปยังศูนย์ข่าว GSD2 เรียบร้อยแล้ว ขอบคุณที่แจ้งเบาะแส', 'success');
-        });
-
-        // --- Search Logic ---
-        document.getElementById('btn-search').addEventListener('click', () => {
-            const query = document.getElementById('search-input').value;
-            if (query.trim() === '') {
-                showMessage('System Notice', 'กรุณาระบุคำค้นหา หรือ รหัสเอกสาร', 'warning');
-            } else {
-                showMessage('Searching Database', `กำลังค้นหารหัสข้อมูล: "${query}"...\n(จำลองระบบไม่พบข้อมูล)`, 'info');
-                document.getElementById('search-input').value = '';
-            }
-        });
-
-        // Enter key for search
-        document.getElementById('search-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                document.getElementById('btn-search').click();
-            }
-        });
-
-        // --- Call Simulation ---
-        window.simulateCall = function(destination) {
-            showMessage('Establishing Secure Connection', `กำลังจำลองการติดต่อไปที่: ${destination}...\nโปรดรอเจ้าหน้าที่รับสาย...`, 'info');
-        };
-
-        // --- Read More Buttons ---
-        const readMoreBtns = document.querySelectorAll('.btn-read-more');
-        readMoreBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                showMessage('ACCESS DENIED', 'คุณไม่มีสิทธิ์การเข้าถึงข้อมูลระดับนี้ (Clearance Level ไม่เพียงพอ)', 'warning');
-            });
-        });
-
-        // --- Database Button ---
-        document.getElementById('btn-intel-database').addEventListener('click', () => {
-            showMessage('Authentication Required', 'ระบบฐานข้อมูลสงวนไว้สำหรับเจ้าหน้าที่ GSD2 กรุณายืนยันตัวตนผ่าน Token', 'warning');
-        });
-    </script> <!-- แก้ไขแท็กปิด Script ที่ตกหล่นให้แล้ว -->
+    </script>
 
     <!-- ======================= 
-         Firebase Configuration
+         Firebase Configuration & Database Logic
     ======================== -->
     <script type="module">
-        // Import the functions you need from the SDKs via CDN
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-analytics.js";
-        
-        // หากในอนาคตต้องการเก็บข้อมูลฟอร์มลงฐานข้อมูล ให้ปลดคอมเมนต์บรรทัดล่างนี้
-        // import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+        // Config ที่คุณให้มา
         const firebaseConfig = {
             apiKey: "AIzaSyDLF2VnClpWVRHn7a_p2WxxnQ999e0K7YY",
             authDomain: "webgsd2.firebaseapp.com",
@@ -559,13 +678,52 @@
             measurementId: "G-71TKG5CW6T"
         };
 
-        // Initialize Firebase
+        // เริ่มต้น Firebase
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
         
-        // const db = getFirestore(app); // สำหรับใช้งานฐานข้อมูล
-        
-        console.log("🔥 Firebase Initialized Successfully");
+        console.log("🔥 Firebase Firestore Connected");
+
+        // จัดการเมื่อกดปุ่ม "บันทึกข้อมูล" ในฟอร์มแจ้งเบาะแส
+        const btnSubmit = document.getElementById('btn-submit-report');
+        btnSubmit.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            const typeInput = document.getElementById('report-type').value;
+            const detailsInput = document.getElementById('report-details').value;
+            const contactInput = document.getElementById('report-contact').value;
+            
+            // ตรวจสอบว่ากรอกข้อมูลครบไหม
+            if (!typeInput || !detailsInput.trim()) {
+                showMessage('ข้อมูลไม่ครบถ้วน', 'กรุณาระบุหัวข้อและรายละเอียดของเบาะแสให้ครบถ้วน', 'warning');
+                return;
+            }
+
+            // เปลี่ยนปุ่มเป็นกำลังโหลด
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> กำลังบันทึก...';
+            btnSubmit.disabled = true;
+
+            try {
+                // คำสั่งส่งข้อมูลเข้า Database
+                const docRef = await addDoc(collection(db, "clue_reports"), {
+                    type: typeInput,
+                    details: detailsInput,
+                    contact: contactInput,
+                    status: "new",
+                    timestamp: serverTimestamp()
+                });
+                
+                closeReportModal();
+                showMessage('บันทึกข้อมูลสำเร็จ', 'ข้อมูลของคุณถูกเข้ารหัสและส่งเข้าฐานข้อมูล Firebase (Test Mode) เรียบร้อยแล้ว', 'success');
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                showMessage('เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้: ' + error.message, 'error');
+            } finally {
+                // คืนสภาพปุ่มเดิม
+                btnSubmit.innerHTML = '<i class="fa-solid fa-database mr-2 text-xs"></i> บันทึกข้อมูล';
+                btnSubmit.disabled = false;
+            }
+        });
     </script>
 </body>
 </html>
