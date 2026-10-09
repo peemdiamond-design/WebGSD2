@@ -187,12 +187,15 @@
             <div class="flex flex-col items-center">
                 <!-- ระดับ 1: ผู้กำกับการ -->
                 <div class="bg-bpp-navyLight border border-bpp-accent p-6 rounded-lg intel-border text-center w-64 md:w-72 relative z-10 shadow-xl">
-                    <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-2 border-bpp-accent shadow-lg bg-slate-800 flex items-center justify-center relative">
+                    
+                    <!-- เปลี่ยนกรอบรูปเป็นสี่เหลี่ยมแนวตั้ง (w-32 h-40 และ rounded-md) -->
+                    <div class="w-32 h-40 mx-auto mb-4 rounded-md overflow-hidden border-2 border-bpp-accent shadow-lg bg-slate-800 flex items-center justify-center relative">
                         <!-- ดึงรูปภาพจากโฟลเดอร์ images -->
                         <img src="images/chalarm.jpg" alt="พ.ต.อ. ฉลาม พงษ์เพชร" class="w-full h-full object-cover object-top">
-                        <!-- วงแหวนเรดาร์ตกแต่ง -->
-                        <div class="absolute inset-0 border-2 border-bpp-accent/30 rounded-full animate-ping opacity-20"></div>
+                        <!-- กรอบกระพริบตกแต่ง -->
+                        <div class="absolute inset-0 border-2 border-bpp-accent/30 rounded-md animate-ping opacity-20"></div>
                     </div>
+                    
                     <h3 class="text-white font-bold text-lg">พ.ต.อ. ฉลาม พงษ์เพชร</h3>
                     <h4 class="text-bpp-accent font-medium text-md mt-1">ผู้กำกับการ</h4>
                     <p class="text-gray-400 text-sm">ฝ่ายอำนวยการ ๒</p>
@@ -263,9 +266,7 @@
         </div>
     </div>
 
-    <!-- ======================= 
-         กระดานสถิติ (Dashboard Page) 
-    ======================== -->
+    <!-- กระดานสถิติ -->
     <div id="page-dashboard" class="page-section hidden py-16 bg-bpp-navy min-h-screen">
         <div class="container mx-auto px-4">
             <div class="flex items-center mb-8">
@@ -301,9 +302,7 @@
         </div>
     </div>
 
-    <!-- ======================= 
-         แฟ้มข่าวกรอง (Intel Page) 
-    ======================== -->
+    <!-- แฟ้มข่าวกรอง -->
     <div id="page-intel" class="page-section hidden py-16 bg-[#020617] min-h-screen">
         <div class="container mx-auto px-4">
             <div class="mb-16">
@@ -346,7 +345,7 @@
     </div>
 
     <!-- ======================= 
-         คลังเอกสาร (Docs Page)
+         คลังเอกสาร
     ======================== -->
     <div id="page-docs" class="page-section hidden py-16 bg-bpp-navy min-h-screen">
         <div class="container mx-auto px-4 max-w-4xl">
@@ -358,7 +357,6 @@
                 </div>
             </div>
 
-            <!-- ข้อความแจ้งเตือนสำหรับผู้ที่ยังไม่ล็อกอิน -->
             <div id="docs-guest-warning" class="mb-6 p-4 border border-yellow-700/50 bg-yellow-900/20 rounded text-sm text-yellow-500 flex items-start shadow-md">
                 <i class="fa-solid fa-lock mr-3 mt-0.5 text-lg"></i>
                 <div>
@@ -432,7 +430,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Contact Info -->
                     <div class="bg-bpp-navyLight p-8 rounded-lg intel-border">
                         <h3 class="text-xl font-medium text-bpp-accent mb-6 border-b border-bpp-gray/30 pb-3"><i class="fa-solid fa-location-dot mr-2"></i> ที่ตั้งหน่วยงาน</h3>
                         <p class="text-gray-300 mb-6 leading-relaxed">
@@ -452,7 +449,6 @@
                         </div>
                     </div>
 
-                    <!-- Emergency Action -->
                     <div class="bg-bpp-navyLight p-8 rounded-lg intel-border flex flex-col justify-center">
                         <h3 class="text-lg font-medium text-white mb-6 text-center">ช่องทางประสานงานด่วน (24 ชม.)</h3>
                         <div class="space-y-4">
