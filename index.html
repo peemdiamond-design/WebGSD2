@@ -65,6 +65,8 @@
                 <!-- Navigation -->
                 <nav class="hidden lg:flex space-x-6 text-sm font-medium">
                     <a href="#hero" class="text-bpp-accent border-b-2 border-bpp-accent pb-1 transition">หน้าหลัก</a>
+                    <!-- เพิ่มเมนูโครงสร้างตรงนี้ -->
+                    <a href="#command" class="hover:text-bpp-accent transition pb-1">โครงสร้าง</a> 
                     <a href="#news" class="hover:text-bpp-accent transition pb-1">ข่าวกรอง (Intelligence)</a>
                     <a href="#contact" class="hover:text-bpp-accent transition pb-1">ติดต่อศูนย์ข่าว</a>
                 </nav>
@@ -107,6 +109,110 @@
                     <button id="btn-intel-database" class="bg-bpp-navyLight hover:bg-bpp-gray/30 text-gray-300 font-mono text-sm py-3 px-6 rounded shadow-lg transition border border-bpp-gray/30 flex items-center justify-center">
                         <i class="fa-solid fa-database mr-2"></i> เข้าสู่ฐานข้อมูล
                     </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================= 
+         Command Structure Section (เพิ่มใหม่)
+    ======================== -->
+    <section id="command" class="py-16 bg-bpp-navy">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-center mb-12">
+                <i class="fa-solid fa-sitemap text-bpp-accent text-3xl mr-4"></i>
+                <h2 class="text-3xl font-bold text-white tracking-wide">โครงสร้างสายบังคับบัญชา</h2>
+            </div>
+            
+            <div class="flex flex-col items-center">
+                <!-- ระดับ 1: ผู้กำกับการ -->
+                <div class="bg-bpp-navyLight border border-bpp-accent p-6 rounded-lg intel-border text-center w-64 md:w-72 relative z-10 shadow-lg">
+                    <div class="w-14 h-14 bg-slate-800 rounded-full mx-auto mb-3 flex items-center justify-center border border-bpp-gray">
+                        <i class="fa-solid fa-star text-xl text-yellow-500"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-lg">ผู้กำกับการ</h3>
+                    <p class="text-gray-400 text-sm mt-1">ฝ่ายอำนวยการ ๒</p>
+                    <p class="text-bpp-grayLight text-xs font-mono mt-2">SUPERINTENDENT</p>
+                </div>
+                
+                <!-- เส้นเชื่อมลงมา ระดับ 2 -->
+                <div class="w-px h-8 md:h-10 bg-bpp-gray/50 hidden md:block"></div>
+                <div class="w-px h-4 bg-bpp-gray/50 md:hidden"></div>
+
+                <!-- ระดับ 2: รองผู้กำกับการ -->
+                <div class="flex flex-col md:flex-row gap-4 md:gap-24 w-full justify-center relative">
+                    <!-- เส้นแนวนอนสำหรับ Desktop -->
+                    <div class="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-[calc(100%-18rem)] max-w-md h-px bg-bpp-gray/50"></div>
+                    
+                    <!-- รอง 1 -->
+                    <div class="flex flex-col items-center relative">
+                        <div class="hidden md:block w-px h-6 bg-bpp-gray/50"></div>
+                        <div class="bg-slate-800 border border-bpp-gray/50 p-4 rounded-lg text-center w-64 shadow-md hover:border-bpp-accent transition z-10">
+                            <i class="fa-solid fa-user-shield text-gray-400 mb-2 text-xl"></i>
+                            <h3 class="text-white font-medium">รองผู้กำกับการ (๑)</h3>
+                            <p class="text-gray-500 text-xs mt-1 font-mono">DEPUTY SUPERINTENDENT</p>
+                        </div>
+                    </div>
+                    
+                    <!-- รอง 2 -->
+                    <div class="flex flex-col items-center relative">
+                        <div class="hidden md:block w-px h-6 bg-bpp-gray/50"></div>
+                        <div class="bg-slate-800 border border-bpp-gray/50 p-4 rounded-lg text-center w-64 shadow-md hover:border-bpp-accent transition z-10">
+                            <i class="fa-solid fa-user-shield text-gray-400 mb-2 text-xl"></i>
+                            <h3 class="text-white font-medium">รองผู้กำกับการ (๒)</h3>
+                            <p class="text-gray-500 text-xs mt-1 font-mono">DEPUTY SUPERINTENDENT</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- เส้นเชื่อมลงมา ระดับ 3 -->
+                <div class="hidden md:block w-px h-10 bg-bpp-gray/50"></div>
+                <div class="w-px h-4 bg-bpp-gray/50 md:hidden"></div>
+
+                <!-- ระดับ 3: สารวัตร -->
+                <div class="flex flex-col md:flex-row gap-4 w-full justify-center relative">
+                    <!-- เส้นแนวนอนสำหรับ Desktop -->
+                    <div class="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-[calc(100%-15rem)] max-w-4xl h-px bg-bpp-gray/50"></div>
+                    
+                    <!-- สว 1 -->
+                    <div class="flex flex-col items-center">
+                        <div class="hidden md:block w-px h-6 bg-bpp-gray/50"></div>
+                        <div class="bg-slate-900 border-t-2 border-bpp-accent p-4 rounded text-center shadow hover:bg-slate-700 transition w-56 z-10">
+                            <i class="fa-solid fa-id-badge text-bpp-gray mb-2"></i>
+                            <h4 class="text-gray-200 text-sm font-medium">สารวัตร (งานข่าวกรอง)</h4>
+                            <p class="text-xs text-gray-500 font-mono mt-1">INSPECTOR (INTEL)</p>
+                        </div>
+                    </div>
+                    
+                    <!-- สว 2 -->
+                    <div class="flex flex-col items-center">
+                        <div class="hidden md:block w-px h-6 bg-bpp-gray/50"></div>
+                        <div class="bg-slate-900 border-t-2 border-bpp-accent p-4 rounded text-center shadow hover:bg-slate-700 transition w-56 z-10">
+                            <i class="fa-solid fa-id-badge text-bpp-gray mb-2"></i>
+                            <h4 class="text-gray-200 text-sm font-medium">สารวัตร (งานยุทธศาสตร์)</h4>
+                            <p class="text-xs text-gray-500 font-mono mt-1">INSPECTOR (STRATEGY)</p>
+                        </div>
+                    </div>
+
+                    <!-- สว 3 -->
+                    <div class="flex flex-col items-center">
+                        <div class="hidden md:block w-px h-6 bg-bpp-gray/50"></div>
+                        <div class="bg-slate-900 border-t-2 border-bpp-accent p-4 rounded text-center shadow hover:bg-slate-700 transition w-56 z-10">
+                            <i class="fa-solid fa-id-badge text-bpp-gray mb-2"></i>
+                            <h4 class="text-gray-200 text-sm font-medium">สารวัตร (งานยุทธการ)</h4>
+                            <p class="text-xs text-gray-500 font-mono mt-1">INSPECTOR (OPS)</p>
+                        </div>
+                    </div>
+                    
+                    <!-- สว 4 -->
+                    <div class="flex flex-col items-center">
+                        <div class="hidden md:block w-px h-6 bg-bpp-gray/50"></div>
+                        <div class="bg-slate-900 border-t-2 border-bpp-accent p-4 rounded text-center shadow hover:bg-slate-700 transition w-56 z-10">
+                            <i class="fa-solid fa-id-badge text-bpp-gray mb-2"></i>
+                            <h4 class="text-gray-200 text-sm font-medium">สารวัตร (งานเทคโนโลยี)</h4>
+                            <p class="text-xs text-gray-500 font-mono mt-1">INSPECTOR (TECH)</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -430,8 +536,9 @@
         document.getElementById('btn-intel-database').addEventListener('click', () => {
             showMessage('Authentication Required', 'ระบบฐานข้อมูลสงวนไว้สำหรับเจ้าหน้าที่ GSD2 กรุณายืนยันตัวตนผ่าน Token', 'warning');
         });
+    </script> <!-- แก้ไขแท็กปิด Script ที่ตกหล่นให้แล้ว -->
 
-<!-- ======================= 
+    <!-- ======================= 
          Firebase Configuration
     ======================== -->
     <script type="module">
