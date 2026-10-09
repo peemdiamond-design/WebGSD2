@@ -377,7 +377,6 @@
                             <td class="px-6 py-4 font-mono text-xs text-bpp-accent">FORM-001</td>
                             <td class="px-6 py-4">แบบฟอร์มรายงานข่าวกรองเบื้องต้น (รข.1)</td>
                             <td class="px-6 py-4 text-center">
-                                <!-- เอกสารทั่วไป ใส่ลิงก์ดาวน์โหลดตรงๆ ได้เลย -->
                                 <button onclick="window.open('#', '_blank')" class="text-gray-400 hover:text-white transition"><i class="fa-solid fa-download"></i> PDF</button>
                             </td>
                         </tr>
@@ -388,30 +387,10 @@
                                 <button onclick="window.open('#', '_blank')" class="text-gray-400 hover:text-white transition"><i class="fa-solid fa-download"></i> PDF</button>
                             </td>
                         </tr>
-
-                        <!-- เอกสารชั้นความลับ (เชื่อมต่อ API Port 1009) -->
-                        <tr class="classified-doc hidden bg-red-950/20 hover:bg-red-900/30 transition">
-                            <td class="px-6 py-4 font-mono text-xs text-red-500"><i class="fa-solid fa-user-secret mr-1"></i> SECRET-01</td>
-                            <td class="px-6 py-4 text-red-200">
-                                <span class="bg-red-600 text-white text-[10px] px-2 py-0.5 rounded mr-2 font-mono">ลับสุดยอด</span>
-                                แผนปฏิบัติการสกัดกั้นแนวชายแดน X-Ray (ฉบับสมบูรณ์)
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                <!-- แก้ไขเอาพารามิเตอร์รหัสลับออกแล้ว -->
-                                <button onclick="downloadSecureFile('SECRET-01')" class="text-red-400 hover:text-red-300 transition"><i class="fa-solid fa-lock-open"></i> PDF</button>
-                            </td>
-                        </tr>
-                        <tr class="classified-doc hidden bg-red-950/20 hover:bg-red-900/30 transition">
-                            <td class="px-6 py-4 font-mono text-xs text-red-500"><i class="fa-solid fa-user-secret mr-1"></i> INTEL-05</td>
-                            <td class="px-6 py-4 text-red-200">
-                                <span class="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded mr-2 font-mono">ลับ</span>
-                                ฐานข้อมูลบัญชีเครือข่ายลักลอบเข้าเมือง (ปี 2566-2569)
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                <!-- แก้ไขเอาพารามิเตอร์รหัสลับออกแล้ว -->
-                                <button onclick="downloadSecureFile('INTEL-05')" class="text-red-400 hover:text-red-300 transition"><i class="fa-solid fa-lock-open"></i> XLS</button>
-                            </td>
-                        </tr>
+                    </tbody>
+                    <!-- เอกสารชั้นความลับ (โหลดอัตโนมัติจาก API) -->
+                    <tbody id="secure-files-container" class="divide-y divide-slate-700">
+                        <!-- แถวข้อมูลจะถูกโหลดมาจาก Nextcloud และสร้างขึ้นที่นี่อัตโนมัติ -->
                     </tbody>
                 </table>
             </div>
@@ -650,53 +629,124 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
         
+        // ชี้ไปที่ IP เซิร์ฟเวอร์และพอร์ต 1009
+        const apiServerUrl = "http://100.92.143.123:1009"; 
+
         // ======================= 
-        // ดาวน์โหลดไฟล์แบบล่องหนผ่าน API (Port 1009)
+        // ฟังก์ชันดึงรายชื่อไฟล์ลับอัตโนมัติ
         // =======================
-        window.downloadSecureFile = async function(documentId) {
+        window.loadSecureFiles = async function() {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const tbody = document.getElementById('secure-files-container');
+            // แสดงสถานะกำลังโหลด
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="3" class="px-6 py-8 text-center text-gray-400">
+                        <i class="fa-solid fa-spinner fa-spin text-bpp-accent text-xl mb-2"></i><br>
+                        กำลังดึงข้อมูลแฟ้มลับ...
+                    </td>
+                </tr>
+            `;
+
+            try {
+                const idToken = await user.getIdToken(true);
+                const response = await fetch(`${apiServerUrl}/api/files`, {
+                    headers: { 'Authorization': `Bearer ${idToken}` }
+                });
+
+                if (!response.ok) throw new Error("ไม่สามารถเชื่อมต่อฐานข้อมูลได้");
+
+                const files = await response.json();
+                tbody.innerHTML = ''; // ล้างสถานะโหลด
+
+                if (files.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="3" class="px-6 py-4 text-center text-gray-500">
+                                ไม่พบเอกสารในคลังข้อมูล
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                // วนลูปสร้างตารางตามรายชื่อไฟล์
+                files.forEach((file, index) => {
+                    const tr = document.createElement('tr');
+                    tr.className = "bg-red-950/20 hover:bg-red-900/30 transition";
+                    
+                    const ext = file.filename.split('.').pop().toUpperCase();
+                    
+                    tr.innerHTML = `
+                        <td class="px-6 py-4 font-mono text-xs text-red-500">
+                            <i class="fa-solid fa-user-secret mr-1"></i> SECURE-${String(index+1).padStart(2, '0')}
+                        </td>
+                        <td class="px-6 py-4 text-red-200">
+                            <span class="bg-red-600 text-white text-[10px] px-2 py-0.5 rounded mr-2 font-mono">ลับ</span>
+                            ${file.filename}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <button onclick="downloadSecureFile('${file.filename}')" class="text-red-400 hover:text-red-300 transition">
+                                <i class="fa-solid fa-lock-open mr-1"></i> ${ext}
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="px-6 py-4 text-center text-red-500">
+                            <i class="fa-solid fa-triangle-exclamation mr-1"></i> เกิดข้อผิดพลาดในการดึงข้อมูล
+                        </td>
+                    </tr>
+                `;
+            }
+        };
+
+        window.clearSecureFiles = function() {
+            const tbody = document.getElementById('secure-files-container');
+            if (tbody) tbody.innerHTML = '';
+        };
+
+        // ======================= 
+        // ดาวน์โหลดไฟล์ (ใช้ชื่อไฟล์เต็ม)
+        // =======================
+        window.downloadSecureFile = async function(fileName) {
             const user = auth.currentUser;
             if (!user) {
                 showMessage('ACCESS DENIED', 'คุณไม่มีสิทธิ์ดาวน์โหลด กรุณาล็อกอินก่อน', 'error');
                 return;
             }
 
-            showMessage('CONNECTING...', `กำลังดึงเอกสาร ${documentId} จากฐานข้อมูลกลาง...`, 'info');
+            showMessage('CONNECTING...', `กำลังดึงเอกสาร ${fileName} จากฐานข้อมูลกลาง...`, 'info');
 
             try {
-                // 1. ดึงบัตรผ่านจากผู้ใช้ที่ล็อกอินอยู่
                 const idToken = await user.getIdToken(true);
                 
-                // 2. ชี้เป้าไปที่ Ubuntu API ของคุณ (ใช้พอร์ต 1009 ที่เราเพิ่งแก้ไป)
-                const apiServerUrl = "http://localhost:1009"; 
-                
-                // 3. ยิงคำขอไปหา Ubuntu พร้อมแนบบัตรผ่าน (Token)
-                const response = await fetch(`${apiServerUrl}/api/download/${documentId}`, {
+                const response = await fetch(`${apiServerUrl}/api/download/${encodeURIComponent(fileName)}`, {
                     method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${idToken}`
-                    }
+                    headers: { 'Authorization': `Bearer ${idToken}` }
                 });
 
-                // ถ้า Ubuntu ปฏิเสธ (ไม่มีไฟล์, รหัสผิด, โทเค็นหมดอายุ)
                 if (!response.ok) {
                     const errorMsg = await response.text();
                     throw new Error(errorMsg);
                 }
 
-                // 4. รับไฟล์มาเป็นก้อน Blob
                 const blob = await response.blob();
-                
-                // 5. สั่งโหลดลงเครื่องแบบซ่อนเร้น (Silent Download)
                 const downloadUrl = window.URL.createObjectURL(blob);
                 const tempLink = document.createElement('a');
                 tempLink.style.display = 'none';
                 tempLink.href = downloadUrl;
-                tempLink.download = `GSD2_${documentId}_CLASSIFIED.pdf`; 
+                tempLink.download = fileName; 
                 
                 document.body.appendChild(tempLink);
                 tempLink.click(); 
 
-                // ลบลิงก์ทิ้งทันที
                 window.URL.revokeObjectURL(downloadUrl);
                 document.body.removeChild(tempLink);
 
@@ -713,21 +763,24 @@
         const btnLogout = document.getElementById('btn-logout');
 
         onAuthStateChanged(auth, (user) => {
-            const classifiedDocs = document.querySelectorAll('.classified-doc');
             const guestWarning = document.getElementById('docs-guest-warning');
 
             if (user) {
                 btnOpenLogin.classList.add('hidden'); btnOpenLogin.classList.remove('flex');
                 btnLogout.classList.remove('hidden'); btnLogout.classList.add('flex');
                 
-                classifiedDocs.forEach(doc => doc.classList.remove('hidden'));
                 if (guestWarning) guestWarning.classList.add('hidden');
+                
+                // โหลดรายชื่อไฟล์จาก API ทันทีที่ล็อกอิน
+                loadSecureFiles();
             } else {
                 btnOpenLogin.classList.remove('hidden'); btnOpenLogin.classList.add('flex');
                 btnLogout.classList.add('hidden'); btnLogout.classList.remove('flex');
                 
-                classifiedDocs.forEach(doc => doc.classList.add('hidden'));
                 if (guestWarning) guestWarning.classList.remove('hidden');
+                
+                // ลบรายชื่อไฟล์ออกจากหน้าจอเมื่อล็อกเอาท์
+                clearSecureFiles();
             }
         });
 
