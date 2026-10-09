@@ -100,7 +100,6 @@
          หน้าหลัก (Home Page) 
     ======================== -->
     <div id="page-home" class="page-section block">
-        <!-- Hero Section -->
         <section id="hero" class="hero-bg min-h-[450px] flex items-center relative overflow-hidden">
             <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')]"></div>
             <div class="container mx-auto px-4 relative z-10">
@@ -175,26 +174,38 @@
         </section>
     </div>
 
-    <!-- โครงสร้างผู้บังคับบัญชา, กระดานสถิติ, และ แฟ้มข่าวกรอง ฯลฯ ถูกรวมไว้อย่างเดิมเพื่อความครบถ้วน -->
+    <!-- ======================= 
+         โครงสร้างผู้บังคับบัญชา (Command Page) 
+    ======================== -->
     <div id="page-command" class="page-section hidden py-16 bg-[#020617] min-h-screen">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-center mb-12">
                 <i class="fa-solid fa-sitemap text-bpp-accent text-3xl mr-4"></i>
                 <h2 class="text-3xl font-bold text-white tracking-wide">โครงสร้างสายบังคับบัญชา</h2>
             </div>
+            
             <div class="flex flex-col items-center">
-                <div class="bg-bpp-navyLight border border-bpp-accent p-6 rounded-lg intel-border text-center w-64 md:w-72 relative z-10 shadow-lg">
-                    <div class="w-14 h-14 bg-slate-800 rounded-full mx-auto mb-3 flex items-center justify-center border border-bpp-gray">
-                        <i class="fa-solid fa-star text-xl text-yellow-500"></i>
+                <!-- ระดับ 1: ผู้กำกับการ -->
+                <div class="bg-bpp-navyLight border border-bpp-accent p-6 rounded-lg intel-border text-center w-64 md:w-72 relative z-10 shadow-xl">
+                    <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-2 border-bpp-accent shadow-lg bg-slate-800 flex items-center justify-center relative">
+                        <!-- ดึงรูปภาพจากโฟลเดอร์ images -->
+                        <img src="images/chalarm.jpg" alt="พ.ต.อ. ฉลาม พงษ์เพชร" class="w-full h-full object-cover object-top">
+                        <!-- วงแหวนเรดาร์ตกแต่ง -->
+                        <div class="absolute inset-0 border-2 border-bpp-accent/30 rounded-full animate-ping opacity-20"></div>
                     </div>
-                    <h3 class="text-white font-bold text-lg">ผู้กำกับการ</h3>
-                    <p class="text-gray-400 text-sm mt-1">ฝ่ายอำนวยการ ๒</p>
-                    <p class="text-bpp-grayLight text-xs font-mono mt-2">SUPERINTENDENT</p>
+                    <h3 class="text-white font-bold text-lg">พ.ต.อ. ฉลาม พงษ์เพชร</h3>
+                    <h4 class="text-bpp-accent font-medium text-md mt-1">ผู้กำกับการ</h4>
+                    <p class="text-gray-400 text-sm">ฝ่ายอำนวยการ ๒</p>
+                    <p class="text-bpp-grayLight text-xs font-mono mt-3 border-t border-slate-700 pt-2">SUPERINTENDENT</p>
                 </div>
+                
                 <div class="w-px h-8 md:h-10 bg-bpp-gray/50 hidden md:block"></div>
                 <div class="w-px h-4 bg-bpp-gray/50 md:hidden"></div>
+
+                <!-- ระดับ 2: รองผู้กำกับการ -->
                 <div class="flex flex-col md:flex-row gap-4 md:gap-24 w-full justify-center relative">
                     <div class="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-[calc(100%-18rem)] max-w-md h-px bg-bpp-gray/50"></div>
+                    
                     <div class="flex flex-col items-center relative">
                         <div class="hidden md:block w-px h-6 bg-bpp-gray/50"></div>
                         <div class="bg-slate-800 border border-bpp-gray/50 p-4 rounded-lg text-center w-64 shadow-md hover:border-bpp-accent transition z-10">
@@ -202,6 +213,7 @@
                             <h3 class="text-white font-medium">รองผู้กำกับการ (๑)</h3>
                         </div>
                     </div>
+                    
                     <div class="flex flex-col items-center relative">
                         <div class="hidden md:block w-px h-6 bg-bpp-gray/50"></div>
                         <div class="bg-slate-800 border border-bpp-gray/50 p-4 rounded-lg text-center w-64 shadow-md hover:border-bpp-accent transition z-10">
@@ -210,8 +222,11 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="hidden md:block w-px h-10 bg-bpp-gray/50"></div>
                 <div class="w-px h-4 bg-bpp-gray/50 md:hidden"></div>
+
+                <!-- ระดับ 3: สารวัตร -->
                 <div class="flex flex-col md:flex-row gap-4 w-full justify-center relative">
                     <div class="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-[calc(100%-15rem)] max-w-4xl h-px bg-bpp-gray/50"></div>
                     
@@ -248,6 +263,9 @@
         </div>
     </div>
 
+    <!-- ======================= 
+         กระดานสถิติ (Dashboard Page) 
+    ======================== -->
     <div id="page-dashboard" class="page-section hidden py-16 bg-bpp-navy min-h-screen">
         <div class="container mx-auto px-4">
             <div class="flex items-center mb-8">
@@ -283,6 +301,9 @@
         </div>
     </div>
 
+    <!-- ======================= 
+         แฟ้มข่าวกรอง (Intel Page) 
+    ======================== -->
     <div id="page-intel" class="page-section hidden py-16 bg-[#020617] min-h-screen">
         <div class="container mx-auto px-4">
             <div class="mb-16">
@@ -325,7 +346,7 @@
     </div>
 
     <!-- ======================= 
-         คลังเอกสาร (อัปเดตใหม่ เพิ่มระบบซ่อนไฟล์ความลับ)
+         คลังเอกสาร (Docs Page)
     ======================== -->
     <div id="page-docs" class="page-section hidden py-16 bg-bpp-navy min-h-screen">
         <div class="container mx-auto px-4 max-w-4xl">
@@ -356,7 +377,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-700">
-                        <!-- เอกสารทั่วไป (ทุกคนเห็นได้) -->
+                        <!-- เอกสารทั่วไป -->
                         <tr class="hover:bg-slate-750 transition">
                             <td class="px-6 py-4 font-mono text-xs text-bpp-accent">FORM-001</td>
                             <td class="px-6 py-4">แบบฟอร์มรายงานข่าวกรองเบื้องต้น (รข.1)</td>
@@ -371,15 +392,8 @@
                                 <button class="text-gray-400 hover:text-white transition"><i class="fa-solid fa-download"></i> PDF</button>
                             </td>
                         </tr>
-                        <tr class="hover:bg-slate-750 transition">
-                            <td class="px-6 py-4 font-mono text-xs text-bpp-accent">REG-2566</td>
-                            <td class="px-6 py-4">ระเบียบการปฏิบัติงานศูนย์ข้อมูลข่าวสาร</td>
-                            <td class="px-6 py-4 text-center">
-                                <button class="text-gray-400 hover:text-white transition"><i class="fa-solid fa-download"></i> DOCX</button>
-                            </td>
-                        </tr>
 
-                        <!-- เอกสารชั้นความลับ (เพิ่มคลาส 'classified-doc' และ 'hidden' ซ่อนไว้เป็นค่าเริ่มต้น) -->
+                        <!-- เอกสารชั้นความลับ -->
                         <tr class="classified-doc hidden bg-red-950/20 hover:bg-red-900/30 transition">
                             <td class="px-6 py-4 font-mono text-xs text-red-500"><i class="fa-solid fa-user-secret mr-1"></i> SECRET-01</td>
                             <td class="px-6 py-4 text-red-200">
@@ -387,7 +401,7 @@
                                 แผนปฏิบัติการสกัดกั้นแนวชายแดน X-Ray (ฉบับสมบูรณ์)
                             </td>
                             <td class="px-6 py-4 text-center">
-                                <button class="text-red-400 hover:text-red-300 transition"><i class="fa-solid fa-lock-open"></i> PDF</button>
+                                <button onclick="downloadSecureFile('SECRET-01')" class="text-red-400 hover:text-red-300 transition"><i class="fa-solid fa-lock-open"></i> PDF</button>
                             </td>
                         </tr>
                         <tr class="classified-doc hidden bg-red-950/20 hover:bg-red-900/30 transition">
@@ -397,7 +411,7 @@
                                 ฐานข้อมูลบัญชีเครือข่ายลักลอบเข้าเมือง (ปี 2566-2569)
                             </td>
                             <td class="px-6 py-4 text-center">
-                                <button class="text-red-400 hover:text-red-300 transition"><i class="fa-solid fa-lock-open"></i> XLS</button>
+                                <button onclick="downloadSecureFile('INTEL-05')" class="text-red-400 hover:text-red-300 transition"><i class="fa-solid fa-lock-open"></i> XLS</button>
                             </td>
                         </tr>
                     </tbody>
@@ -426,7 +440,18 @@
                             พหลโยธิน แขวงพญาไท เขตพญาไท<br>
                             กรุงเทพมหานคร 10400
                         </p>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-envelope text-bpp-gray w-8 text-center text-xl"></i>
+                                <span class="text-gray-300 font-mono">intel.gsd2@bpp.go.th</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fa-solid fa-fax text-bpp-gray w-8 text-center text-xl"></i>
+                                <span class="text-gray-300 font-mono">02-XXX-XXXX</span>
+                            </div>
+                        </div>
                     </div>
+
                     <!-- Emergency Action -->
                     <div class="bg-bpp-navyLight p-8 rounded-lg intel-border flex flex-col justify-center">
                         <h3 class="text-lg font-medium text-white mb-6 text-center">ช่องทางประสานงานด่วน (24 ชม.)</h3>
@@ -437,6 +462,14 @@
                                     <span class="font-bold">สายด่วนศูนย์ข่าว</span>
                                 </div>
                                 <span class="font-mono text-lg text-bpp-accent">1199</span>
+                            </button>
+                            
+                            <button onclick="simulateCall('วิทยุสื่อสารความถี่หลัก (CH.1)')" class="w-full bg-slate-800 hover:bg-slate-700 text-white py-4 px-6 rounded-lg border border-slate-600 transition flex justify-between items-center group shadow">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-walkie-talkie text-bpp-gray mr-4 group-hover:text-white transition text-xl"></i>
+                                    <span class="font-bold">วิทยุสื่อสาร ศปก.</span>
+                                </div>
+                                <span class="font-mono text-sm bg-slate-900 px-3 py-1 rounded text-gray-400 border border-slate-700">CH.1</span>
                             </button>
                         </div>
                     </div>
@@ -600,7 +633,7 @@
     </script>
 
     <!-- ======================= 
-         Firebase Configuration, Auth & Database
+         Firebase Configuration, Auth, Database & Secure API Flow
     ======================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -622,41 +655,68 @@
         const auth = getAuth(app);
         
         // ======================= 
-        // 1. ระบบจำกัดการเข้าถึงเอกสาร
+        // ดาวน์โหลดไฟล์แบบสตรีมผ่าน Blob
+        // =======================
+        window.downloadSecureFile = async function(documentId) {
+            const user = auth.currentUser;
+            if (!user) {
+                showMessage('ACCESS DENIED', 'คุณไม่มีสิทธิ์ดาวน์โหลด กรุณาล็อกอินก่อน', 'error');
+                return;
+            }
+
+            showMessage('CONNECTING...', 'กำลังเข้ารหัสและดึงข้อมูลไฟล์จากเซิร์ฟเวอร์หลัก...', 'info');
+
+            try {
+                // โค้ดจำลองการดึงไฟล์ Blob 
+                const mockContent = "%PDF-1.4\n1 0 obj\n<< /Title (CLASSIFIED DOC: " + documentId + ") >>\nendobj\n";
+                const blob = new Blob([mockContent], { type: 'application/pdf' });
+                await new Promise(r => setTimeout(r, 1500)); 
+                
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const tempLink = document.createElement('a');
+                tempLink.style.display = 'none';
+                tempLink.href = downloadUrl;
+                tempLink.download = `GSD2_${documentId}_CLASSIFIED.pdf`; 
+                
+                document.body.appendChild(tempLink);
+                tempLink.click(); 
+
+                window.URL.revokeObjectURL(downloadUrl);
+                document.body.removeChild(tempLink);
+
+                showMessage('DOWNLOAD COMPLETE', 'ดาวน์โหลดไฟล์ความลับสำเร็จ ข้อมูลถูกส่งผ่านช่องทางเข้ารหัสแล้ว', 'success');
+            } catch (error) {
+                showMessage('SECURITY ALERT', 'การดาวน์โหลดถูกระงับ: ' + error.message, 'error');
+            }
+        };
+
+        // ======================= 
+        // ระบบจำกัดการเข้าถึงเอกสาร
         // =======================
         const btnOpenLogin = document.getElementById('btn-open-login');
         const btnLogout = document.getElementById('btn-logout');
 
-        // ทำงานเมื่อตรวจพบว่าล็อกอิน หรือ ล็อกเอาท์
         onAuthStateChanged(auth, (user) => {
-            // ดึงไฟล์ที่ติดคลาสความลับ และกล่องข้อความเตือน
             const classifiedDocs = document.querySelectorAll('.classified-doc');
             const guestWarning = document.getElementById('docs-guest-warning');
 
             if (user) {
-                // กรณีล็อกอินอยู่
                 btnOpenLogin.classList.add('hidden'); btnOpenLogin.classList.remove('flex');
                 btnLogout.classList.remove('hidden'); btnLogout.classList.add('flex');
                 
-                // แสดงไฟล์ชั้นความลับ
                 classifiedDocs.forEach(doc => doc.classList.remove('hidden'));
-                // ซ่อนข้อความแจ้งเตือน "ต้องล็อกอิน"
                 if (guestWarning) guestWarning.classList.add('hidden');
-
             } else {
-                // กรณียังไม่ได้ล็อกอิน (หรือกดล็อกเอาท์)
                 btnOpenLogin.classList.remove('hidden'); btnOpenLogin.classList.add('flex');
                 btnLogout.classList.add('hidden'); btnLogout.classList.remove('flex');
                 
-                // ซ่อนไฟล์ชั้นความลับทั้งหมด
                 classifiedDocs.forEach(doc => doc.classList.add('hidden'));
-                // แสดงข้อความแจ้งเตือน "ต้องล็อกอิน"
                 if (guestWarning) guestWarning.classList.remove('hidden');
             }
         });
 
         // ======================= 
-        // 2. ล็อกอิน / ล็อกเอาท์
+        // ล็อกอิน / ล็อกเอาท์
         // =======================
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -682,12 +742,11 @@
         btnLogout.addEventListener('click', async () => {
             await signOut(auth);
             showMessage('SYSTEM STATUS', 'ออกจากระบบเรียบร้อย (ระบบตัดการเข้าถึงไฟล์ความลับแล้ว)', 'info');
-            // พาผู้ใช้กลับไปหน้าหลักเพื่อความปลอดภัย
             switchPage('page-home', document.querySelector('.nav-btn'));
         });
 
         // ======================= 
-        // 3. ส่งข้อมูลแจ้งเบาะแส
+        // ส่งข้อมูลแจ้งเบาะแส
         // =======================
         document.getElementById('btn-submit-report').addEventListener('click', async (e) => {
             e.preventDefault();
