@@ -389,7 +389,7 @@
                             </td>
                         </tr>
 
-                        <!-- เอกสารชั้นความลับ (เพิ่มพารามิเตอร์รหัส Nextcloud) -->
+                        <!-- เอกสารชั้นความลับ (เชื่อมต่อ API Port 1009) -->
                         <tr class="classified-doc hidden bg-red-950/20 hover:bg-red-900/30 transition">
                             <td class="px-6 py-4 font-mono text-xs text-red-500"><i class="fa-solid fa-user-secret mr-1"></i> SECRET-01</td>
                             <td class="px-6 py-4 text-red-200">
@@ -397,8 +397,8 @@
                                 แผนปฏิบัติการสกัดกั้นแนวชายแดน X-Ray (ฉบับสมบูรณ์)
                             </td>
                             <td class="px-6 py-4 text-center">
-                                <!-- เปลี่ยน 'ใส่รหัสลิงก์แชร์Nextcloudที่นี่' เป็นรหัสที่ได้จาก Nextcloud -->
-                                <button onclick="downloadSecureFile('SECRET-01', 'ใส่รหัสลิงก์แชร์Nextcloudที่นี่')" class="text-red-400 hover:text-red-300 transition"><i class="fa-solid fa-lock-open"></i> PDF</button>
+                                <!-- แก้ไขเอาพารามิเตอร์รหัสลับออกแล้ว -->
+                                <button onclick="downloadSecureFile('SECRET-01')" class="text-red-400 hover:text-red-300 transition"><i class="fa-solid fa-lock-open"></i> PDF</button>
                             </td>
                         </tr>
                         <tr class="classified-doc hidden bg-red-950/20 hover:bg-red-900/30 transition">
@@ -408,8 +408,8 @@
                                 ฐานข้อมูลบัญชีเครือข่ายลักลอบเข้าเมือง (ปี 2566-2569)
                             </td>
                             <td class="px-6 py-4 text-center">
-                                <!-- เปลี่ยน 'ใส่รหัสลิงก์แชร์Nextcloudที่นี่' เป็นรหัสที่ได้จาก Nextcloud -->
-                                <button onclick="downloadSecureFile('INTEL-05', 'ใส่รหัสลิงก์แชร์Nextcloudที่นี่')" class="text-red-400 hover:text-red-300 transition"><i class="fa-solid fa-lock-open"></i> XLS</button>
+                                <!-- แก้ไขเอาพารามิเตอร์รหัสลับออกแล้ว -->
+                                <button onclick="downloadSecureFile('INTEL-05')" class="text-red-400 hover:text-red-300 transition"><i class="fa-solid fa-lock-open"></i> XLS</button>
                             </td>
                         </tr>
                     </tbody>
@@ -629,7 +629,7 @@
     </script>
 
     <!-- ======================= 
-         Firebase Configuration, Auth, Database & Nextcloud API Flow
+         Firebase Configuration, Auth, Database & API Flow (Port 1009)
     ======================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -651,39 +651,58 @@
         const auth = getAuth(app);
         
         // ======================= 
-        // ดาวน์โหลดไฟล์แบบล่องหนผ่าน Nextcloud
+        // ดาวน์โหลดไฟล์แบบล่องหนผ่าน API (Port 1009)
         // =======================
-        window.downloadSecureFile = async function(documentId, nextcloudToken) {
+        window.downloadSecureFile = async function(documentId) {
             const user = auth.currentUser;
             if (!user) {
                 showMessage('ACCESS DENIED', 'คุณไม่มีสิทธิ์ดาวน์โหลด กรุณาล็อกอินก่อน', 'error');
                 return;
             }
 
-            showMessage('CONNECTING...', `กำลังดึงเอกสาร ${documentId} จาก Nextcloud Vault...`, 'info');
+            showMessage('CONNECTING...', `กำลังดึงเอกสาร ${documentId} จากฐานข้อมูลกลาง...`, 'info');
 
             try {
-                // === กำหนด IP หรือ Domain ของ Nextcloud Server ของคุณที่นี่ ===
-                const nextcloudHost = "http://[ใส่-IP-หรือ-โดเมน-Ubuntu-ของคุณ]";
+                // 1. ดึงบัตรผ่านจากผู้ใช้ที่ล็อกอินอยู่
+                const idToken = await user.getIdToken(true);
                 
-                // นำรหัส token มาต่อเป็นลิงก์ Direct Download
-                const directDownloadUrl = `${nextcloudHost}/s/${nextcloudToken}/download`;
+                // 2. ชี้เป้าไปที่ Ubuntu API ของคุณ (ใช้พอร์ต 1009 ที่เราเพิ่งแก้ไป)
+                const apiServerUrl = "http://100.92.143.123:1009"; 
+                
+                // 3. ยิงคำขอไปหา Ubuntu พร้อมแนบบัตรผ่าน (Token)
+                const response = await fetch(`${apiServerUrl}/api/download/${documentId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${idToken}`
+                    }
+                });
 
-                // หน่วงเวลาให้ดูเหมือนกำลังถอดรหัส
-                await new Promise(r => setTimeout(r, 1000)); 
+                // ถ้า Ubuntu ปฏิเสธ (ไม่มีไฟล์, รหัสผิด, โทเค็นหมดอายุ)
+                if (!response.ok) {
+                    const errorMsg = await response.text();
+                    throw new Error(errorMsg);
+                }
+
+                // 4. รับไฟล์มาเป็นก้อน Blob
+                const blob = await response.blob();
                 
-                // สร้างลิงก์เสมือนและสั่งคลิกโหลดแบบล่องหน
+                // 5. สั่งโหลดลงเครื่องแบบซ่อนเร้น (Silent Download)
+                const downloadUrl = window.URL.createObjectURL(blob);
                 const tempLink = document.createElement('a');
                 tempLink.style.display = 'none';
-                tempLink.href = directDownloadUrl;
+                tempLink.href = downloadUrl;
+                tempLink.download = `GSD2_${documentId}_CLASSIFIED.pdf`; 
                 
                 document.body.appendChild(tempLink);
                 tempLink.click(); 
+
+                // ลบลิงก์ทิ้งทันที
+                window.URL.revokeObjectURL(downloadUrl);
                 document.body.removeChild(tempLink);
 
-                showMessage('DOWNLOAD COMPLETE', 'ดาวน์โหลดข้อมูลจากศูนย์ Nextcloud เสร็จสมบูรณ์', 'success');
+                showMessage('DOWNLOAD COMPLETE', 'ดาวน์โหลดข้อมูลสำเร็จ การเข้ารหัสสมบูรณ์', 'success');
             } catch (error) {
-                showMessage('NETWORK ERROR', 'เชื่อมต่อเซิร์ฟเวอร์ Nextcloud ล้มเหลว: ' + error.message, 'error');
+                showMessage('SECURITY ALERT', error.message, 'error');
             }
         };
 
