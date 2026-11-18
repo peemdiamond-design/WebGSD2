@@ -1,0 +1,24 @@
+rules_version = '2';
+
+// Cloud Storage Security Rules — โปรเจกต์ gsd2-532a1
+// ตอนนี้เว็บยังไม่ได้ใช้ Storage: ปิดทุกอย่าง ยกเว้นโฟลเดอร์ secure/ ที่เจ้าหน้าที่อ่านได้
+// (เผื่อย้ายไฟล์ลับจากเซิร์ฟเวอร์พอร์ต 1009 มาไว้ที่ Storage ในอนาคต)
+// อัปโหลดไฟล์ผ่าน Firebase Console — เว็บเขียนไม่ได้
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isStaff() {
+      return request.auth != null
+        && firestore.exists(/databases/(default)/documents/staff/$(request.auth.uid));
+    }
+
+    match /secure/{allPaths=**} {
+      allow read: if isStaff();
+      allow write: if false;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

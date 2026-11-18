@@ -1,0 +1,59 @@
+rules_version = '2';
+
+// Firestore Security Rules — โปรเจกต์ gsd2-532a1
+// หลักการ: ปิดทุกอย่างเป็นค่าเริ่มต้น แล้วเปิดเฉพาะที่จำเป็น
+//
+// เจ้าหน้าที่ (staff) = ผู้ใช้ที่ล็อกอินแล้ว และมีเอกสาร /staff/{uid} อยู่
+// (เพิ่ม/ลบเจ้าหน้าที่ได้จาก Firebase Console เท่านั้น — เว็บเขียนคอลเลกชันนี้ไม่ได้)
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isStaff() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/staff/$(request.auth.uid));
+    }
+
+    // ---------- รายชื่อเจ้าหน้าที่ ----------
+    match /staff/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;  // อ่านได้เฉพาะของตัวเอง
+      allow write: if false;                                  // จัดการผ่าน Console เท่านั้น
+    }
+
+    // ---------- ข้อมูลสาธารณะ (เช่น public/stats ของหน้ากระดานสถิติ) ----------
+    match /public/{docId} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+
+    // ---------- เบาะแสจากประชาชน ----------
+    match /clue_reports/{reportId} {
+      // ใครก็ส่งได้ (ไม่ต้องล็อกอิน) แต่ต้องมีรูปแบบถูกต้องเท่านั้น
+      allow create: if
+        request.resource.data.keys().hasOnly(['type', 'details', 'contact', 'createdAt'])
+        && request.resource.data.keys().hasAll(['type', 'details', 'contact', 'createdAt'])
+        && request.resource.data.type in ['ความมั่นคงแนวชายแดน', 'ยาเสพติด/สิ่งผิดกฎหมาย', 'อื่นๆ']
+        && request.resource.data.details is string
+        && request.resource.data.details.size() > 0
+        && request.resource.data.details.size() <= 5000
+        && request.resource.data.contact is string
+        && request.resource.data.contact.size() <= 200
+        && request.resource.data.createdAt == request.time;
+
+      // ประชาชนอ่าน/แก้/ลบไม่ได้ — เฉพาะเจ้าหน้าที่อ่านและลบได้
+      allow read, delete: if isStaff();
+
+      // เจ้าหน้าที่แก้ได้เฉพาะช่องสถานะ/บันทึกภายใน ห้ามแก้เนื้อหาเบาะแส
+      allow update: if isStaff()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'staffNote']);
+    }
+
+    // ---------- อย่างอื่นทั้งหมด: ปิด ----------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
