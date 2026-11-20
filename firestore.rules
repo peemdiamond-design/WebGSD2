@@ -17,16 +17,53 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/staff/$(request.auth.uid));
     }
 
+    function str(v, maxLen) {
+      return v is string && v.size() <= maxLen;
+    }
+
+    function httpsOrEmpty(v, maxLen) {
+      return str(v, maxLen) && (v == '' || v.matches('https://.+'));
+    }
+
     // ---------- รายชื่อเจ้าหน้าที่ ----------
     match /staff/{uid} {
       allow read: if signedIn() && request.auth.uid == uid;  // อ่านได้เฉพาะของตัวเอง
       allow write: if false;                                  // จัดการผ่าน Console เท่านั้น
     }
 
-    // ---------- ข้อมูลสาธารณะ (เช่น public/stats ของหน้ากระดานสถิติ) ----------
+    // ---------- ข้อมูลสาธารณะ (public/stats ของหน้าสถิติ) ----------
     match /public/{docId} {
       allow read: if true;
       allow write: if isStaff();
+    }
+
+    // ---------- ข่าวสาร / ประกาศ (หน้า "ข่าวสาร") ----------
+    match /bulletins/{id} {
+      allow read: if true;
+      allow delete: if isStaff();
+      allow create, update: if isStaff()
+        && request.resource.data.keys().hasOnly(['title', 'summary', 'body', 'category', 'imageUrl', 'publishedAt', 'updatedAt', 'authorUid'])
+        && request.resource.data.keys().hasAll(['title', 'category', 'publishedAt'])
+        && str(request.resource.data.title, 200) && request.resource.data.title.size() > 0
+        && str(request.resource.data.get('summary', ''), 500)
+        && str(request.resource.data.get('body', ''), 20000)
+        && request.resource.data.category in ['news', 'alert', 'wanted']
+        && httpsOrEmpty(request.resource.data.get('imageUrl', ''), 2000)
+        && request.resource.data.publishedAt is timestamp;
+    }
+
+    // ---------- คลังเอกสารสาธารณะ (ลิงก์ไปยังไฟล์ เช่น Nextcloud / Google Drive) ----------
+    match /documents/{id} {
+      allow read: if true;
+      allow delete: if isStaff();
+      allow create, update: if isStaff()
+        && request.resource.data.keys().hasOnly(['code', 'title', 'url', 'fileType', 'category', 'updatedAt'])
+        && request.resource.data.keys().hasAll(['title', 'url'])
+        && str(request.resource.data.title, 300) && request.resource.data.title.size() > 0
+        && str(request.resource.data.url, 2000) && request.resource.data.url.matches('https://.+')
+        && str(request.resource.data.get('code', ''), 40)
+        && str(request.resource.data.get('fileType', ''), 10)
+        && str(request.resource.data.get('category', ''), 80);
     }
 
     // ---------- เบาะแสจากประชาชน ----------
@@ -48,7 +85,9 @@ service cloud.firestore {
 
       // เจ้าหน้าที่แก้ได้เฉพาะช่องสถานะ/บันทึกภายใน ห้ามแก้เนื้อหาเบาะแส
       allow update: if isStaff()
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'staffNote']);
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'staffNote', 'updatedAt'])
+        && request.resource.data.get('status', 'new') in ['new', 'reviewing', 'closed']
+        && str(request.resource.data.get('staffNote', ''), 2000);
     }
 
     // ---------- อย่างอื่นทั้งหมด: ปิด ----------
